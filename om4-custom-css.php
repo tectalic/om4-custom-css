@@ -237,7 +237,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 
 	public function SaveCustomCSSToFile() {
 
-		$css = "/* CSS Generated " . om4_timestamp_to_full_datetime_inc_timezone() . " by User ID " . get_current_user_id() . " */\n\n" . $this->GetCustomCSS();
+		$css = "/* CSS Generated " . date('r') . " by User ID " . get_current_user_id() . " */\n\n" . $this->GetCustomCSS();
 
 //      $random = time() . '-' . uniqid();
 		$random = time();
@@ -271,7 +271,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 			}
 		} else {
 			// Error saving css file. This really shouldn't happen, but just in case.
-			om4_log_error( __FILE__, 'Error creating Custom CSS stylesheet', get_defined_vars() );
+			trigger_error( sprintf( __( 'Error creating Custom CSS stylesheet: %s', 'om4-custom-css' ), $filename ) );
 			return false;
 		}
 		return true;
