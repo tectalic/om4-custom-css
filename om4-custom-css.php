@@ -229,7 +229,9 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 	}
 
 	public function OutputCustomCSSStylesheet() {
-		echo "\n" . '<link rel="stylesheet" href="' . $this->GetCustomCSSFileURL() . '" type="text/css" media="screen" />' . "\n";
+		if ( ( '' != $this->GetCustomCSSFileName() ) ) {
+			echo "\n" . '<link rel="stylesheet" href="' . $this->GetCustomCSSFileURL() . '" type="text/css" media="screen" />' . "\n";
+		}
 	}
 
 
