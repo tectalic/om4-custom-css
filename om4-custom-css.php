@@ -3,12 +3,13 @@
 Plugin Name: OM4 Custom CSS
 Plugin URI: http://om4.com.au/wordpress-plugins/
 Description: Add custom CSS rules using WordPress Dashboard.
-Version: 1.0
+Version: 1.0.1
 Author: OM4
 Author URI: http://om4.com.au/
 Text Domain: om4-custom-css
 Git URI: https://github.com/OM4/om4-custom-css
 Git Branch: release
+License: GPLv2
 */
 
 /*
