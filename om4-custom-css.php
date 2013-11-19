@@ -2,8 +2,8 @@
 /*
 Plugin Name: OM4 Custom CSS
 Plugin URI: http://om4.com.au/wordpress-plugins/
-Description: Add custom CSS rules using WordPress Dashboard.
-Version: 1.0.1
+Description: Add custom CSS rules using the WordPress Dashboard.
+Version: 1.0.2-dev
 Author: OM4
 Author URI: http://om4.com.au/
 Text Domain: om4-custom-css
@@ -38,7 +38,7 @@ if ( ! class_exists( 'OM4_Plugin_Appearance' ) )
 
 /**
  * Custom CSS feature implementation:
- * - Adds Dashboard -> Appearance -> Custom CSS screen, which is accessible to any WordPress Administrator
+ * - Adds Dashboard -> Appearance -> Custom CSS, which is accessible to any WordPress Administrator
  * - Outputs the Custom CSS rule stylesheet into any theme that has the 'wp_head' hook
  *
  * Should work with OM4 Theme, any WooTheme, and (hopefully) any other WordPress theme.
@@ -53,13 +53,13 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 		$this->wp_editor_defaults['textarea_rows'] = 30;
 
 		if ( is_admin() ) {
-			$this->AddLoadDashboardPageHook( 'add_thickbox' );
-			add_action( 'admin_post_update_custom_css', array($this, 'DashboardScreenSave') );
+			$this->add_load_dashboard_page_hook( 'add_thickbox' );
+			add_action( 'admin_post_update_custom_css', array($this, 'dashboard_screen_save') );
 		} else {
-			add_action('init', array($this, 'InitFrontend'), 100000 );
+			add_action('init', array($this, 'init_frontend'), 100000 );
 		}
 
-		add_action('om4_new_site_initialised', array($this, 'NewSiteInitialised'));
+		add_action('om4_new_site_initialised', array($this, 'new_site_initialised'));
 
 		parent::__construct();
 	}
@@ -68,12 +68,12 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 	 * Tasks to perform when a new website is created/initialised.
 	 * @return bool
 	 */
-	public function NewSiteInitialised() {
+	public function new_site_initialised() {
 		// Generate the initial Custom CSS file
-		return $this->SaveCustomCSSToFile();
+		return $this->save_custom_css_to_file();
 	}
 
-	public function InitFrontend() {
+	public function init_frontend() {
 
 		// Attempt to ensure that our Custom CSS rules are the last thing output before </head>
 		$hook = 'wp_head';
@@ -85,14 +85,14 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 			// WooTheme
 			$hook = 'woo_head';
 		}
-		add_action( $hook, array($this, 'OutputCustomCSSStylesheet'), 100000 );
+		add_action( $hook, array($this, 'output_custom_css_stylesheet'), 100000 );
 	}
 
-	public function GetCustomCSS() {
+	public function get_custom_css() {
 		return get_option( 'om4_freeform_css', '' );
 	}
 
-	private function SetCustomCSS( $css ) {
+	private function set_custom_css( $css ) {
 		return update_option( 'om4_freeform_css', $css );
 	}
 
@@ -105,24 +105,24 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 	 *
 	 * @return bool True on success, false on failure
 	 */
-	private function SaveCustomCSS( $css ) {
-		$this->SetCustomCSSLastSavedTimestamp();
-		$this->SetCustomCSS( $css );
-		return $this->SaveCustomCSSToFile();
+	private function save_custom_css( $css ) {
+		$this->set_custom_css_last_saved_timestamp();
+		$this->set_custom_css( $css );
+		return $this->save_custom_css_to_file();
 	}
 
-	private function GetCustomCSSLastSavedTimestamp() {
+	private function get_custom_css_last_saved_timestamp() {
 		return get_option( 'om4_freeform_css_last_saved_timestamp', 1 );
 	}
 
-	private function SetCustomCSSLastSavedTimestamp( $timestamp = null ) {
+	private function set_custom_css_last_saved_timestamp( $timestamp = null ) {
 		if ( is_null( $timestamp) )
 			$timestamp = time();
 		return update_option( 'om4_freeform_css_last_saved_timestamp', $timestamp );
 	}
 
-	private function GetCustomCSSFileURL() {
-		return $this->UploadUrl( $this->GetCustomCSSFileName() );
+	private function get_custom_css_file_url() {
+		return $this->upload_url( $this->get_custom_css_filename() );
 	}
 
 	/**
@@ -134,22 +134,22 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 	 *
 	 * @return string
 	 */
-	private function GetCustomCSSFileName() {
+	private function get_custom_css_filename() {
 		return get_option( 'om4_freeform_css_filename', '' );
 	}
 
-	private function SetCustomCSSFileName( $filename ) {
+	private function set_custom_css_filename( $filename ) {
 		return update_option( 'om4_freeform_css_filename', $filename );
 	}
 
-	public function DashboardScreen () {
+	public function dashboard_screen() {
 		// TODO: convert this screen to use wp_editor()
 		?>
 	<div class='wrap'>
 		<div id="om4-header">
 			<h2><?php echo esc_attr($this->screen_title); ?></h2>
 			<?php
-			if ( !$this->CanAccessDashboardScreen() ) {
+			if ( !$this->can_access_dashboard_screen() ) {
 				echo '<div class="error"><p>You do not have permission to access this feature.</p></div></div></div>';
 				return;
 			}
@@ -157,7 +157,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 			if ( isset($_GET['updated']) && $_GET['updated'] == 'true' ) {
 				?>
 				<div id="message" class="updated fade"><p>Custom CSS rules saved. You can <a href="<?php echo site_url(); ?>">view your site by clicking here</a>.</p></div>
-				<div id="message" class="updated fade"><p>It is recommended that you <?php echo $this->ValidateCSSLink('validate your CSS rules'); ?> to help you find errors, typos and incorrect uses of CSS.</p></div>
+				<div id="message" class="updated fade"><p>It is recommended that you <?php echo $this->validate_css_link('validate your CSS rules'); ?> to help you find errors, typos and incorrect uses of CSS.</p></div>
 				<?php
 			} else if ( isset($_GET['updated']) && $_GET['updated'] == 'false' ) {
 				?>
@@ -166,15 +166,15 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 			}
 
 			?>
-			<form action="<?php echo $this->FormAction(); ?>" method="post">
-				<div style="float: right;"><?php echo $this->ValidateCSSButton(); ?></div>
+			<form action="<?php echo $this->form_action(); ?>" method="post">
+				<div style="float: right;"><?php echo $this->validate_css_button(); ?></div>
 				<p>To use <strong>Custom CSS</strong> rules to change the appearance of your site, enter them in this text box. Custom CSS rules will override your theme's CSS using the inheritance rules of CSS.<br />
 				Rules must have a selector followed by rules in curly braces, for example <code>.mystyle { color: blue; }</code><br />
 				Make sure you close all curly brace pairs to avoid errors.  CSS is powerful but hard to understand.  If interested, look at this <a href="http://www.w3schools.com/css/css_intro.asp">introduction</a>, or this <a href="http://www.w3.org/MarkUp/Guide/Style">one</a>.  </p>
 				<div style="clear: both;"></div>
 				<?php
 
-				wp_editor( $this->GetCustomCSS(), 'css', $this->wp_editor_defaults );
+				wp_editor( $this->get_custom_css(), 'css', $this->wp_editor_defaults );
 
 				?>
 				<input type="hidden" name="action" value="update_custom_css" />
@@ -191,13 +191,13 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 	/**
 	 * Handler that saves the dashboard screen's options/values, then redirects back to the Dashboard Screen
 	 */
-	public function DashboardScreenSave() {
+	public function dashboard_screen_save() {
 
-		$url = $this->DashboardURL();
+		$url = $this->dashboard_url();
 
-		if ( $this->CanAccessDashboardScreen() ) {
+		if ( $this->can_access_dashboard_screen() ) {
 			check_admin_referer('update_custom_css');
-			$url = $this->SaveCustomCSS( stripslashes($_POST['css']) ) ? $this->DashboardURLSaved() : $this->DashboardURLSavedError();
+			$url = $this->save_custom_css( stripslashes($_POST['css']) ) ? $this->dashboard_url_saved() : $this->dashboard_url_saved_error();
 		}
 
 		wp_redirect( $url );
@@ -208,16 +208,16 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 	 * Create a button that when clicked opens a thickbox window that shows the CSS validation results
 	 * @param string $buttonText Button anchor text
 	 */
-	private function ValidateCSSButton($buttonText = 'Validate CSS Rules') {
-		return '<input type="button" name="W3C CSS Validation Results" value="' . $buttonText . '" class="thickbox button-secondary" onclick="return false;" alt="' . $this->ValidateCSSUrl() . '" style="margin-left: 3em;" />';
+	private function validate_css_button($buttonText = 'Validate CSS Rules') {
+		return '<input type="button" name="W3C CSS Validation Results" value="' . $buttonText . '" class="thickbox button-secondary" onclick="return false;" alt="' . $this->validate_css_url() . '" style="margin-left: 3em;" />';
 	}
 
 	/**
 	 * Obtain the URL to the CSS validation service
 	 * @return string
 	 */
-	private function ValidateCSSUrl() {
-		return esc_url( 'http://jigsaw.w3.org/css-validator/validator?warning=no&uri=' . urlencode( $this->GetCustomCSSFileURL() ) . '&TB_iframe=true&width=900&height=600' );
+	private function validate_css_url() {
+		return esc_url( 'http://jigsaw.w3.org/css-validator/validator?warning=no&uri=' . urlencode( $this->get_custom_css_file_url() ) . '&TB_iframe=true&width=900&height=600' );
 	}
 
 	/**
@@ -225,20 +225,20 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 	 * @param string $anchor Link anchor text
 	 * @return string
 	 */
-	private function ValidateCSSLink($anchor) {
-		return '<a onlick="return false;" class="thickbox"href="' . $this->ValidateCSSUrl() . '" name="W3C CSS Validation Results">' . $anchor . '</a>';
+	private function validate_css_link($anchor) {
+		return '<a onlick="return false;" class="thickbox"href="' . $this->validate_css_url() . '" name="W3C CSS Validation Results">' . $anchor . '</a>';
 	}
 
-	public function OutputCustomCSSStylesheet() {
-		if ( ( '' != $this->GetCustomCSSFileName() ) ) {
-			echo "\n" . '<link rel="stylesheet" href="' . $this->GetCustomCSSFileURL() . '" type="text/css" media="screen" />' . "\n";
+	public function output_custom_css_stylesheet() {
+		if ( ( '' != $this->get_custom_css_filename() ) ) {
+			echo "\n" . '<link rel="stylesheet" href="' . $this->get_custom_css_file_url() . '" type="text/css" media="screen" />' . "\n";
 		}
 	}
 
 
-	public function SaveCustomCSSToFile() {
+	public function save_custom_css_to_file() {
 
-		$css = "/* CSS Generated " . date('r') . " by User ID " . get_current_user_id() . " */\n\n" . $this->GetCustomCSS();
+		$css = "/* CSS Generated " . date('r') . " by User ID " . get_current_user_id() . " */\n\n" . $this->get_custom_css();
 
 //      $random = time() . '-' . uniqid();
 		$random = time();
@@ -247,19 +247,19 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 		// Save the CSS rules to a unique file
 
 		// Tell WordPress temporarily that .css files can be uploaded
-		add_filter('upload_mimes', array( $this, 'MimeTypes') );
+		add_filter('upload_mimes', array( $this, 'mime_types') );
 		$result = wp_upload_bits( $filename, null, $css );
-		remove_filter('upload_mimes', array( $this, 'MimeTypes') );
+		remove_filter('upload_mimes', array( $this, 'mime_types') );
 
 		if ( !$result['error'] ) {
 			// Save the filename (and yyyy/mm folder names if applicable) to the newly generated stylesheet
 			$dir = wp_upload_dir();
 			$filename = str_replace($dir['baseurl'], '', $result['url']);
 
-			$old_filename = $this->GetCustomCSSFileName();
+			$old_filename = $this->get_custom_css_filename();
 
 			// Create the new CSS file
-			$this->SetCustomCSSFileName( $filename );
+			$this->set_custom_css_filename( $filename );
 
 			// Delete the previous CSS stylesheet if it exists
 			if ( strlen($old_filename) ) {
@@ -278,7 +278,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 		return true;
 	}
 
-	public function MimeTypes($mimes) {
+	public function mime_types($mimes) {
 		$mimes['css'] = 'text/css';
 		return $mimes;
 	}
@@ -288,7 +288,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 	 * @param string $path Optional. Path relative to the upload url.
 	 * @return string full URL to the uploaded file
 	 */
-	private function UploadUrl( $path = '') {
+	private function upload_url( $path = '') {
 		$dir = wp_upload_dir();
 		return $dir['baseurl'] . $path;
 	}
@@ -303,12 +303,12 @@ $om4_custom_css = new OM4_Custom_CSS();
 
 function om4_save_custom_css_to_file() {
 	global $om4_custom_css;
-	return $om4_custom_css->SaveCustomCSSToFile();
+	return $om4_custom_css->save_custom_css_to_file();
 }
 
 function om4_get_custom_css() {
 	global $om4_custom_css;
-	return $om4_custom_css->GetCustomCSS();
+	return $om4_custom_css->get_custom_css();
 }
 
 /** END GLOBAL FUNCTIONS **/
