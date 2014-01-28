@@ -3,7 +3,7 @@
 Plugin Name: OM4 Custom CSS
 Plugin URI: http://om4.com.au/wordpress-plugins/
 Description: Add custom CSS rules using the WordPress Dashboard.
-Version: 1.0.2
+Version: 1.0.3
 Author: OM4
 Author URI: http://om4.com.au/
 Text Domain: om4-custom-css
@@ -14,7 +14,7 @@ License: GPLv2
 
 /*
 
-   Copyright 2012-2013 OM4 (email: info@om4.com.au    web: http://om4.com.au/)
+   Copyright 2012-2014 OM4 (email: info@om4.com.au    web: http://om4.com.au/)
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -270,6 +270,10 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 				}
 
 			}
+
+			// Flush caches. Necessary because cached pages would otherwise refer to a custom-xyz.css file that has just been deleted
+			$this->cache_flush();
+
 		} else {
 			// Error saving css file. This really shouldn't happen, but just in case.
 			trigger_error( sprintf( __( 'Error creating Custom CSS stylesheet: %s', 'om4-custom-css' ), $filename ) );
