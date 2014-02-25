@@ -288,6 +288,8 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 	 * Automatically detect requests for old/previous custom CSS files/URLs, and 301 redirect them to the latest CSS file.
 	 *
 	 * Helps prevent issues with cached pages referring to a previous Custom CSS file that no longer exists.
+	 *
+	 * Unfortunately this doesn't seem to work on WP Engine - PHP never seems to get instantiated for /wp-content/uploads/ requests.
 	 */
 	public function template_redirect() {
 		if ( is_404() ) {

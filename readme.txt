@@ -25,6 +25,7 @@ The Custom CSS rules are usually output the last thing output before </head>, ma
 
 = 1.0.5 =
 * Automatically redirect requests for old/previous custom CSS files. Helps prevent issues with cached pages referring to a previous Custom CSS file that no longer exists. For example, on WPengine or a site using another page caching setup.
+* Automatically purge WP Engine's cache when Custom CSS rules are saved.
 * Add readme.
 
 = 1.0.4 =
