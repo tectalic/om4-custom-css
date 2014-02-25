@@ -1,11 +1,11 @@
 <?php
 /*
 Plugin Name: OM4 Custom CSS
-Plugin URI: http://om4.com.au/wordpress-plugins/
-Description: Add custom CSS rules using the WordPress Dashboard.
-Version: 1.0.4
+Plugin URI: https://github.com/OM4/om4-custom-css
+Description: Add custom CSS rules using the WordPress Dashboard. Access via Dashboard, Appearance, Custom CSS.
+Version: 1.0.5
 Author: OM4
-Author URI: http://om4.com.au/
+Author URI: https://github.com/OM4/
 Text Domain: om4-custom-css
 Git URI: https://github.com/OM4/om4-custom-css
 Git Branch: release
@@ -58,6 +58,8 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 		} else {
 			add_action('init', array($this, 'init_frontend'), 100000 );
 		}
+
+		add_action( 'template_redirect', array($this, 'template_redirect'), 11 ); // After WordPress' redirect_canonical
 
 		add_action('om4_new_site_initialised', array($this, 'new_site_initialised'));
 
@@ -280,6 +282,42 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * Automatically detect requests for old/previous custom CSS files/URLs, and 301 redirect them to the latest CSS file.
+	 *
+	 * Helps prevent issues with cached pages referring to a previous Custom CSS file that no longer exists.
+	 *
+	 * Unfortunately this doesn't seem to work on WP Engine - PHP never seems to get instantiated for /wp-content/uploads/ requests.
+	 */
+	public function template_redirect() {
+		if ( is_404() ) {
+			// WordPress is about to emit a 404 error
+			// Check to see if the request looks like it is for an old custom css file.
+
+			// The requested URL path
+			$requested_url = is_ssl() ? 'https://' : 'http://';
+			$requested_url .= $_SERVER['HTTP_HOST'];
+			$requested_url .= $_SERVER['REQUEST_URI'];
+			$requested_url = @parse_url( $requested_url );
+			$requested_url = $requested_url['path'];
+
+			// The URL path to the current/latest custom css file
+			$current_stylesheet_url = $this->get_custom_css_file_url();
+			$current_stylesheet_url = @parse_url( $current_stylesheet_url );
+			$current_stylesheet_url = $current_stylesheet_url['path'];
+
+			// Cater for an optional /yyyy/mm/ prefix, which may have changed to another year/month (or been removed completely)
+			$pattern                = '/([0-9]{4}\/[0-9]{2}\/)?custom-([0-9]+).css/';
+			$requested_url          = preg_replace( $pattern, 'custom-*.css', $requested_url );
+			$current_stylesheet_url = preg_replace( $pattern, 'custom-*.css', $current_stylesheet_url );
+
+			if ( $requested_url == $current_stylesheet_url ) {
+				wp_redirect( $this->get_custom_css_file_url(), 301 );
+				exit;
+			}
+		}
 	}
 
 	public function mime_types($mimes) {
