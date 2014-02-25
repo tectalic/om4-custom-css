@@ -1,11 +1,11 @@
 <?php
 /*
 Plugin Name: OM4 Custom CSS
-Plugin URI: http://om4.com.au/wordpress-plugins/
-Description: Add custom CSS rules using the WordPress Dashboard.
+Plugin URI: https://github.com/OM4/om4-custom-css
+Description: Add custom CSS rules using the WordPress Dashboard. Access via Dashboard, Appearance, Custom CSS.
 Version: 1.0.5
 Author: OM4
-Author URI: http://om4.com.au/
+Author URI: https://github.com/OM4/
 Text Domain: om4-custom-css
 Git URI: https://github.com/OM4/om4-custom-css
 Git Branch: release
