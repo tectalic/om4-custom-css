@@ -1,8 +1,8 @@
 === OM4 Custom CSS ===
 Tags: custom css, css
 Requires at least: 3.7
-Tested up to: 3.8.1
-Stable tag: 1.0.5
+Tested up to: 3.9
+Stable tag: 1.0.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -22,6 +22,10 @@ The Custom CSS rules are usually output the last thing output before </head>, ma
 1. Go to Appearance, Custom CSS and write some CSS rules!
 
 == Changelog ==
+
+= 1.0.6 =
+* Allow other plugins to perform actions whenever the Custom CSS rules are saved.
+* No longer flush the caches in this plugin. Instead, it will be done via the OM4 Service plugin.
 
 = 1.0.5 =
 * Automatically redirect requests for old/previous custom CSS files. Helps prevent issues with cached pages referring to a previous Custom CSS file that no longer exists. For example, on WPengine or a site using another page caching setup.
