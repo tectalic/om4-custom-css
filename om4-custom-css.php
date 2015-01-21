@@ -3,7 +3,7 @@
 Plugin Name: OM4 Custom CSS
 Plugin URI: https://github.com/OM4/om4-custom-css
 Description: Add custom CSS rules using the WordPress Dashboard. Access via Dashboard, Appearance, Custom CSS.
-Version: 1.0.6
+Version: 1.0.7
 Author: OM4
 Author URI: https://github.com/OM4/
 Text Domain: om4-custom-css
@@ -14,7 +14,7 @@ License: GPLv2
 
 /*
 
-   Copyright 2012-2014 OM4 (email: info@om4.com.au    web: http://om4.com.au/)
+   Copyright 2012-2015 OM4 (email: info@om4.com.au    web: http://om4.com.au/)
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -59,9 +59,16 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 			add_action('init', array($this, 'init_frontend'), 100000 );
 		}
 
+		// Once a day, remove old css files
+		if ( !wp_next_scheduled( 'om4_custom_css_cleanup' ) ) {
+			wp_schedule_event( time(), 'daily', 'om4_custom_css_cleanup' );
+		}
+		
+		add_action( 'om4_custom_css_cleanup', array($this, 'cleanup') );
+		
 		add_action( 'template_redirect', array($this, 'template_redirect'), 11 ); // After WordPress' redirect_canonical
 
-		add_action('om4_new_site_initialised', array($this, 'new_site_initialised'));
+		add_action( 'om4_new_site_initialised', array($this, 'new_site_initialised') );
 
 		parent::__construct();
 	}
@@ -95,7 +102,8 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 	}
 
 	private function set_custom_css( $css ) {
-		return update_option( 'om4_freeform_css', $css );
+		delete_option( 'om4_freeform_css' );
+		return add_option( 'om4_freeform_css', $css, '', 'no' );
 	}
 
 	/**
@@ -126,6 +134,14 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 	private function get_custom_css_file_url() {
 		return $this->upload_url( $this->get_custom_css_filename() );
 	}
+	
+	private function get_custom_css_filenames_old() {
+		$old_files = get_option( 'om4_freeform_css_old_files', false );
+		if ( false === $old_files ) {
+			add_option( 'om4_freeform_css_old_files', array(), '',  'no' );
+		}
+		return $old_files;
+	}
 
 	/**
 	 * Obtain the file name to the file where the custom CSS rules are saved to.
@@ -141,11 +157,15 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 	}
 
 	private function set_custom_css_filename( $filename ) {
+		// The old filenames are stored for cleanup later
+		// This stops caching issues where old files are requested but no longer exist
+		$old_files = $this->get_custom_css_filenames_old();
+		$old_files[] = $this->get_custom_css_filename();
+		update_option( 'om4_freeform_css_old_files', $old_files );
 		return update_option( 'om4_freeform_css_filename', $filename );
 	}
 
 	public function dashboard_screen() {
-		// TODO: convert this screen to use wp_editor()
 		?>
 	<div class='wrap'>
 		<div id="om4-header">
@@ -258,20 +278,8 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 			$dir = wp_upload_dir();
 			$filename = str_replace($dir['baseurl'], '', $result['url']);
 
-			$old_filename = $this->get_custom_css_filename();
-
 			// Create the new CSS file
 			$this->set_custom_css_filename( $filename );
-
-			// Delete the previous CSS stylesheet if it exists
-			if ( strlen($old_filename) ) {
-				$old_filename = $dir['basedir'] . $old_filename;
-				if ( file_exists($old_filename) && is_file($old_filename) ) {
-					// Delete the previous .css file now that the new one has been created.
-					unlink( $old_filename );
-				}
-
-			}
 
 			// Allow other plugins to perform actions whenever the Custom CSS rules are saved
 			do_action( 'om4_custom_css_saved' );
@@ -282,6 +290,22 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 			return false;
 		}
 		return true;
+	}
+	
+	public function cleanup() {
+		// Delete the previous CSS stylesheets
+		
+		$old_files = $this->get_custom_css_filenames_old();
+		$dir = wp_upload_dir();
+		
+		foreach ( $old_files as $old_filename ) {
+			$old_filename = $dir['basedir'] . $old_filename;
+			if ( file_exists($old_filename) && is_file($old_filename) ) {
+				unlink( $old_filename );
+			}
+		}
+		
+		update_option( 'om4_freeform_css_old_files', array() );
 	}
 
 	/**
