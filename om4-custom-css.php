@@ -97,10 +97,18 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 		add_action( $hook, array($this, 'output_custom_css_stylesheet'), 100000 );
 	}
 
+	/**
+	 * Retrieves the CSS from the database
+	 * @return string The CSS
+	 */
 	public function get_custom_css() {
 		return get_option( 'om4_freeform_css', '' );
 	}
 
+	/**
+	 * Updates the CSS in the database
+	 * @return boolean False if option was not added and true if option was added
+	 */
 	private function set_custom_css( $css ) {
 		delete_option( 'om4_freeform_css' );
 		return add_option( 'om4_freeform_css', $css, '', 'no' );
@@ -135,6 +143,10 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 		return $this->upload_url( $this->get_custom_css_filename() );
 	}
 	
+	/**
+	 * Retrieves the list of old CSS files from the database
+	 * @return array The paths (relative to wp-content/uploads/)
+	 */
 	private function get_custom_css_filenames_old() {
 		$old_files = get_option( 'om4_freeform_css_old_files', false );
 		if ( false === $old_files ) {
@@ -156,6 +168,12 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 		return get_option( 'om4_freeform_css_filename', '' );
 	}
 
+	/**
+	 * Sets the filename of the current custom stylesheet
+	 * 
+	 * Updates the current custom stylesheet's name in the database.
+	 * Also adds the old name to the list of old files
+	 */
 	private function set_custom_css_filename( $filename ) {
 		// The old filenames are stored for cleanup later
 		// This stops caching issues where old files are requested but no longer exist
@@ -165,6 +183,9 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 		return update_option( 'om4_freeform_css_filename', $filename );
 	}
 
+	/**
+	 * Outputs the custom CSS editor dashboard screen
+	 */
 	public function dashboard_screen() {
 		?>
 	<div class='wrap'>
@@ -236,7 +257,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 
 	/**
 	 * Obtain the URL to the CSS validation service
-	 * @return string
+	 * @return string The URL to W3's CSS Validator prepopulated with the CSS file's URI
 	 */
 	private function validate_css_url() {
 		return esc_url( 'http://jigsaw.w3.org/css-validator/validator?warning=no&uri=' . urlencode( $this->get_custom_css_file_url() ) . '&TB_iframe=true&width=900&height=600' );
@@ -245,19 +266,25 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 	/**
 	 * Create a link that when clicked opens a thickbox window that shows the CSS validation results
 	 * @param string $anchor Link anchor text
-	 * @return string
+	 * @return string A HTML link to validate the CSS
 	 */
 	private function validate_css_link($anchor) {
-		return '<a onlick="return false;" class="thickbox"href="' . $this->validate_css_url() . '" name="W3C CSS Validation Results">' . $anchor . '</a>';
+		return '<a onlick="return false;" class="thickbox" href="' . $this->validate_css_url() . '" name="W3C CSS Validation Results">' . $anchor . '</a>';
 	}
 
+	/**
+	 * Output's the link tag to include the stylesheet
+	 */
 	public function output_custom_css_stylesheet() {
 		if ( ( '' != $this->get_custom_css_filename() ) ) {
 			echo "\n" . '<link rel="stylesheet" href="' . $this->get_custom_css_file_url() . '" type="text/css" media="screen" />' . "\n";
 		}
 	}
 
-
+	/**
+	 * Uploads the new custom CSS file
+	 * @return boolean False if the stylesheet could not be created, true otherwise
+	 */
 	public function save_custom_css_to_file() {
 
 		$css = "/* CSS Generated " . date('r') . " by User ID " . get_current_user_id() . " */\n\n" . $this->get_custom_css();
@@ -292,6 +319,9 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 		return true;
 	}
 	
+	/**
+	 * Runs automatically to delete old CSS files
+	 */
 	public function cleanup() {
 		// Delete the previous CSS stylesheets
 		
@@ -344,6 +374,11 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 		}
 	}
 
+	/**
+	 * Adds in a CSS MIME type to upload the stylesheet
+	 * @param array $mimes Current MIME types
+	 * @return array The same array with CSS added
+	 */
 	public function mime_types($mimes) {
 		$mimes['css'] = 'text/css';
 		return $mimes;
