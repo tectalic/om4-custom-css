@@ -61,7 +61,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 
 		// Once a day, remove old css files
 		if ( !wp_next_scheduled( 'om4_custom_css_cleanup' ) ) {
-			wp_schedule_event( time(), 'daily', 'om4_custom_css_cleanup' );
+			wp_schedule_event( time() + HOUR_IN_SECONDS, 'daily', 'om4_custom_css_cleanup' );
 		}
 		
 		add_action( 'om4_custom_css_cleanup', array($this, 'cleanup') );
@@ -150,7 +150,8 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 	private function get_custom_css_filenames_old() {
 		$old_files = get_option( 'om4_freeform_css_old_files', false );
 		if ( false === $old_files ) {
-			add_option( 'om4_freeform_css_old_files', array(), '',  'no' );
+			$old_files = array();
+			add_option( 'om4_freeform_css_old_files', $old_files, '',  'no' );
 		}
 		return $old_files;
 	}
