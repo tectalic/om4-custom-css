@@ -3,7 +3,7 @@
 Plugin Name: OM4 Custom CSS
 Plugin URI: https://github.com/OM4/om4-custom-css
 Description: Add custom CSS rules using the WordPress Dashboard. Access via Dashboard, Appearance, Custom CSS.
-Version: 1.0.6
+Version: 1.0.7
 Author: OM4
 Author URI: https://github.com/OM4/
 Text Domain: om4-custom-css
@@ -14,7 +14,7 @@ License: GPLv2
 
 /*
 
-   Copyright 2012-2014 OM4 (email: info@om4.com.au    web: http://om4.com.au/)
+   Copyright 2012-2015 OM4 (email: info@om4.com.au    web: http://om4.com.au/)
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -59,9 +59,16 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 			add_action('init', array($this, 'init_frontend'), 100000 );
 		}
 
+		// Once a day, remove old css files
+		if ( !wp_next_scheduled( 'om4_custom_css_cleanup' ) ) {
+			wp_schedule_event( time() + HOUR_IN_SECONDS, 'daily', 'om4_custom_css_cleanup' );
+		}
+		
+		add_action( 'om4_custom_css_cleanup', array($this, 'cleanup') );
+		
 		add_action( 'template_redirect', array($this, 'template_redirect'), 11 ); // After WordPress' redirect_canonical
 
-		add_action('om4_new_site_initialised', array($this, 'new_site_initialised'));
+		add_action( 'om4_new_site_initialised', array($this, 'new_site_initialised') );
 
 		parent::__construct();
 	}
@@ -75,6 +82,11 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 		return $this->save_custom_css_to_file();
 	}
 
+	/**
+	 * Output the Custom CSS file as late as possible just before the </head> tag.
+	 *
+	 * Executed during the init hook when not in the admin/dashboard.
+	 */
 	public function init_frontend() {
 
 		// Attempt to ensure that our Custom CSS rules are the last thing output before </head>
@@ -90,20 +102,33 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 		add_action( $hook, array($this, 'output_custom_css_stylesheet'), 100000 );
 	}
 
+	/**
+	 * Retrieves the custom CSS rules from the database.
+	 * Used when editing the CSS rules via the dashboard.
+	 *
+	 * @return string The CSS
+	 */
 	public function get_custom_css() {
 		return get_option( 'om4_freeform_css', '' );
 	}
 
+	/**
+	 * Saves the custom CSS  rules to the database so that they can be edited later.
+	 *
+	 * @return boolean False if option was not added and true if option was added
+	 */
 	private function set_custom_css( $css ) {
-		return update_option( 'om4_freeform_css', $css );
+		// Use delete_option() & add_option() instead of update_option() so that we don't autoload the option.
+		delete_option( 'om4_freeform_css' );
+		return add_option( 'om4_freeform_css', $css, '', 'no' );
 	}
 
 	/**
 	 * Save the specified Custom CSS rules.
 	 *
-	 * Save them to the database (for easy retrieval), and save them to the filesystem (for easy display via the frontend)
+	 * Save them to the database (for easy retrieval when editing), and save them to the filesystem (for easy display via the frontend).
 	 *
-	 * @param string $css
+	 * @param string $css The CSS
 	 *
 	 * @return bool True on success, false on failure
 	 */
@@ -123,8 +148,29 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 		return update_option( 'om4_freeform_css_last_saved_timestamp', $timestamp );
 	}
 
+	/**
+	 * Obtain the full URL to the custom CSS stylesheet.
+	 *
+	 * @return string
+	 */
 	private function get_custom_css_file_url() {
 		return $this->upload_url( $this->get_custom_css_filename() );
+	}
+	
+	/**
+	 * Retrieves the list of old CSS files from the database.
+	 *
+	 * Used when cleaning up previous/old CSS files.
+	 *
+	 * @return array The paths (relative to wp-content/uploads/)
+	 */
+	private function get_custom_css_filenames_old() {
+		$old_files = get_option( 'om4_freeform_css_old_files' );
+		if ( false === $old_files ) {
+			$old_files = array();
+			add_option( 'om4_freeform_css_old_files', $old_files, '',  'no' );
+		}
+		return $old_files;
 	}
 
 	/**
@@ -140,12 +186,25 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 		return get_option( 'om4_freeform_css_filename', '' );
 	}
 
+	/**
+	 * Sets the filename of the current custom stylesheet
+	 * 
+	 * Updates the current custom stylesheet's name in the database.
+	 * Also adds the old name to the list of old files
+	 */
 	private function set_custom_css_filename( $filename ) {
+		// The old filenames are stored for cleanup later
+		// This stops caching issues where old files are requested but no longer exist
+		$old_files = $this->get_custom_css_filenames_old();
+		$old_files[] = $this->get_custom_css_filename();
+		update_option( 'om4_freeform_css_old_files', $old_files );
 		return update_option( 'om4_freeform_css_filename', $filename );
 	}
 
+	/**
+	 * Outputs the custom CSS editor dashboard screen.
+	 */
 	public function dashboard_screen() {
-		// TODO: convert this screen to use wp_editor()
 		?>
 	<div class='wrap'>
 		<div id="om4-header">
@@ -191,7 +250,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 	}
 
 	/**
-	 * Handler that saves the dashboard screen's options/values, then redirects back to the Dashboard Screen
+	 * Handler that saves the dashboard screen's options/values, then redirects back to the Dashboard Screen.
 	 */
 	public function dashboard_screen_save() {
 
@@ -216,7 +275,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 
 	/**
 	 * Obtain the URL to the CSS validation service
-	 * @return string
+	 * @return string The URL to W3's CSS Validator prepopulated with the CSS file's URI
 	 */
 	private function validate_css_url() {
 		return esc_url( 'http://jigsaw.w3.org/css-validator/validator?warning=no&uri=' . urlencode( $this->get_custom_css_file_url() ) . '&TB_iframe=true&width=900&height=600' );
@@ -225,19 +284,26 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 	/**
 	 * Create a link that when clicked opens a thickbox window that shows the CSS validation results
 	 * @param string $anchor Link anchor text
-	 * @return string
+	 * @return string A HTML link to validate the CSS
 	 */
 	private function validate_css_link($anchor) {
-		return '<a onlick="return false;" class="thickbox"href="' . $this->validate_css_url() . '" name="W3C CSS Validation Results">' . $anchor . '</a>';
+		return '<a onlick="return false;" class="thickbox" href="' . $this->validate_css_url() . '" name="W3C CSS Validation Results">' . $anchor . '</a>';
 	}
 
+	/**
+	 * Output's the link tag to include the stylesheet
+	 */
 	public function output_custom_css_stylesheet() {
 		if ( ( '' != $this->get_custom_css_filename() ) ) {
 			echo "\n" . '<link rel="stylesheet" href="' . $this->get_custom_css_file_url() . '" type="text/css" media="screen" />' . "\n";
 		}
 	}
 
-
+	/**
+	 * Saves the existing custom CSS rules to the filesystem (uploads directory).
+	 *
+	 * @return boolean False if the stylesheet could not be saved, true otherwise
+	 */
 	public function save_custom_css_to_file() {
 
 		$css = "/* CSS Generated " . date('r') . " by User ID " . get_current_user_id() . " */\n\n" . $this->get_custom_css();
@@ -258,20 +324,8 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 			$dir = wp_upload_dir();
 			$filename = str_replace($dir['baseurl'], '', $result['url']);
 
-			$old_filename = $this->get_custom_css_filename();
-
 			// Create the new CSS file
 			$this->set_custom_css_filename( $filename );
-
-			// Delete the previous CSS stylesheet if it exists
-			if ( strlen($old_filename) ) {
-				$old_filename = $dir['basedir'] . $old_filename;
-				if ( file_exists($old_filename) && is_file($old_filename) ) {
-					// Delete the previous .css file now that the new one has been created.
-					unlink( $old_filename );
-				}
-
-			}
 
 			// Allow other plugins to perform actions whenever the Custom CSS rules are saved
 			do_action( 'om4_custom_css_saved' );
@@ -282,6 +336,26 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 			return false;
 		}
 		return true;
+	}
+	
+	/**
+	 * Deletes old custom CSS files from the uploads directory.
+	 * Run automatically each day via WP-Cron.
+	 */
+	public function cleanup() {
+		// Delete the previous CSS stylesheets
+		
+		$old_files = $this->get_custom_css_filenames_old();
+		$dir = wp_upload_dir();
+		
+		foreach ( $old_files as $old_filename ) {
+			$old_filename = $dir['basedir'] . $old_filename;
+			if ( file_exists($old_filename) && is_file($old_filename) ) {
+				unlink( $old_filename );
+			}
+		}
+		
+		update_option( 'om4_freeform_css_old_files', array() );
 	}
 
 	/**
@@ -320,6 +394,11 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 		}
 	}
 
+	/**
+	 * Adds in a CSS MIME type to upload the stylesheet
+	 * @param array $mimes Current MIME types
+	 * @return array The same array with CSS added
+	 */
 	public function mime_types($mimes) {
 		$mimes['css'] = 'text/css';
 		return $mimes;
