@@ -24,7 +24,7 @@ The Custom CSS rules are usually output the last thing output before </head>, ma
 == Changelog ==
 
 = 1.0.7 =
-* Store previous CSS files for up to a day. This stops caching issues where old files are requested but no longer exist.
+* Store previous CSS files for up to a day. This avoids issues where static caches (such as the ones used on WP Engine) refer to old CSS files that no longer exist.
 
 = 1.0.6 =
 * Allow other plugins to perform actions whenever the Custom CSS rules are saved.
