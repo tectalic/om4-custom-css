@@ -118,6 +118,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 	 * @return boolean False if option was not added and true if option was added
 	 */
 	private function set_custom_css( $css ) {
+		// Use delete_option() & add_option() instead of update_option() so that we don't autoload the option.
 		delete_option( 'om4_freeform_css' );
 		return add_option( 'om4_freeform_css', $css, '', 'no' );
 	}
