@@ -1,7 +1,7 @@
 === OM4 Custom CSS ===
 Tags: custom css, css
 Requires at least: 3.7
-Tested up to: 4.1
+Tested up to: 4.2
 Stable tag: 1.0.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -22,6 +22,9 @@ The Custom CSS rules are usually output the last thing output before </head>, ma
 1. Go to Appearance, Custom CSS and write some CSS rules!
 
 == Changelog ==
+
+= 1.0.8 =
+* Security enhancement for add_query_arg usage.
 
 = 1.0.7 =
 * Store previous CSS files for up to a day. This avoids issues where static caches (such as the ones used on WP Engine) refer to old CSS files that no longer exist.
