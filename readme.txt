@@ -2,7 +2,7 @@
 Tags: custom css, css
 Requires at least: 3.7
 Tested up to: 4.1
-Stable tag: 1.0.7
+Stable tag: 1.0.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
