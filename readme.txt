@@ -23,6 +23,9 @@ The Custom CSS rules are usually output the last thing output before </head>, ma
 
 == Changelog ==
 
+= 1.1 =
+* CSS syntax highlighting
+
 = 1.0.8 =
 * Security enhancement for add_query_arg usage.
 
