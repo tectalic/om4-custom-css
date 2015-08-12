@@ -236,14 +236,10 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 			?>
 			<form action="<?php echo $this->form_action(); ?>" method="post">
 				<div style="float: right;"><?php echo $this->validate_css_button(); ?></div>
-				<p>To use <strong>Custom CSS</strong> rules to change the appearance of your site, enter them in this text box. Custom CSS rules will override your theme's CSS using the inheritance rules of CSS.<br />
-				Rules must have a selector followed by rules in curly braces, for example <code>.mystyle { color: blue; }</code><br />
-				Make sure you close all curly brace pairs to avoid errors.  CSS is powerful but hard to understand.  If interested, look at this <a href="http://www.w3schools.com/css/css_intro.asp">introduction</a>, or this <a href="http://www.w3.org/MarkUp/Guide/Style">one</a>.  </p>
-				<div style="clear: both;"></div>
+				<p>To use <strong>Custom CSS</strong> rules to change the appearance of your site, enter them in this text box. Custom CSS rules will override your theme's CSS using the inheritance rules of CSS.</p>
+				<p class="submit"><input type="submit" name="submit" id="submit" class="button-primary" value="Save CSS Rules"></p>
 				<?php
-
 				wp_editor( $this->get_custom_css(), 'css', $this->wp_editor_defaults );
-
 				?>
 				<input type="hidden" name="action" value="update_custom_css" />
 				<?php
