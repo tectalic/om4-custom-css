@@ -74,6 +74,13 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 	}
 
 	/**
+	 * Get the URL to this plugin's folder
+	 */
+	public function plugin_url() {
+		return untrailingslashit( plugins_url( '/', __FILE__ ) );
+	}
+
+	/**
 	 * Tasks to perform when a new website is created/initialised.
 	 * @return bool
 	 */
@@ -246,6 +253,17 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 				</form>
 		</div>
 	</div>
+		<script src="<?php esc_attr_e( $this->plugin_url() ); ?>/CodeMirror/lib/codemirror.js"></script>
+		<script src="<?php esc_attr_e( $this->plugin_url() ); ?>/CodeMirror/mode/css/css.js"></script>
+		<link rel="stylesheet" href="<?php esc_attr_e( $this->plugin_url() ); ?>/CodeMirror/lib/codemirror.css">
+		<script>
+			var textArea = document.getElementById('css');
+			var myCodeMirror = CodeMirror.fromTextArea(textArea, {
+				lineNumbers: true,
+				mode: "css",
+				autofocus: true
+			});
+		</script>
 	<?php
 	}
 
