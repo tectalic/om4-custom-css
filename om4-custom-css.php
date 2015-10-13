@@ -41,7 +41,7 @@ if ( ! class_exists( 'OM4_Plugin_Appearance' ) )
  * - Adds Dashboard -> Appearance -> Custom CSS, which is accessible to any WordPress Administrator
  * - Outputs the Custom CSS rule stylesheet into any theme that has the 'wp_head' hook
  *
- * Should work with OM4 Theme, any WooTheme, and (hopefully) any other WordPress theme.
+ * Should work with any WordPress theme that has the 'wp_head' hook
  */
 class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 
@@ -68,8 +68,6 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 		
 		add_action( 'template_redirect', array($this, 'template_redirect'), 11 ); // After WordPress' redirect_canonical
 
-		add_action( 'om4_new_site_initialised', array($this, 'new_site_initialised') );
-
 		parent::__construct();
 	}
 
@@ -80,14 +78,6 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 		return untrailingslashit( plugins_url( '/', __FILE__ ) );
 	}
 
-	/**
-	 * Tasks to perform when a new website is created/initialised.
-	 * @return bool
-	 */
-	public function new_site_initialised() {
-		// Generate the initial Custom CSS file
-		return $this->save_custom_css_to_file();
-	}
 
 	/**
 	 * Output the Custom CSS file as late as possible just before the </head> tag.
