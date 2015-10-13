@@ -24,7 +24,8 @@ The Custom CSS rules are usually output the last thing output before </head>, ma
 == Changelog ==
 
 = 1.1 =
-* CSS syntax highlighting
+* CSS syntax highlighting.
+* Fix CSS validate buttons (they now open in a new window because the CSS validator can no longer be embedded in an iframe thickbox).
 
 = 1.0.8 =
 * Security enhancement for add_query_arg usage.

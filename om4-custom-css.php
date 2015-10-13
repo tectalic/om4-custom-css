@@ -53,7 +53,6 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 		$this->wp_editor_defaults['textarea_rows'] = 30;
 
 		if ( is_admin() ) {
-			$this->add_load_dashboard_page_hook( 'add_thickbox' );
 			add_action( 'admin_post_update_custom_css', array($this, 'dashboard_screen_save') );
 		} else {
 			add_action('init', array($this, 'init_frontend'), 100000 );
@@ -275,11 +274,11 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 	}
 
 	/**
-	 * Create a button that when clicked opens a thickbox window that shows the CSS validation results
+	 * Create a button that when clicked opens a new window that shows the CSS validation results
 	 * @param string $buttonText Button anchor text
 	 */
 	private function validate_css_button($buttonText = 'Validate CSS Rules') {
-		return '<input type="button" name="W3C CSS Validation Results" value="' . $buttonText . '" class="thickbox button-secondary" onclick="return false;" alt="' . $this->validate_css_url() . '" style="margin-left: 3em;" />';
+		return '<a target="_blank" href="' . $this->validate_css_url() . '"><input type="button" name="W3C CSS Validation Results" value="' . $buttonText . '" class="button-secondary" style="margin-left: 3em;" /></a>';
 	}
 
 	/**
@@ -287,16 +286,16 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 	 * @return string The URL to W3's CSS Validator prepopulated with the CSS file's URI
 	 */
 	private function validate_css_url() {
-		return esc_url( 'http://jigsaw.w3.org/css-validator/validator?warning=no&uri=' . urlencode( $this->get_custom_css_file_url() ) . '&TB_iframe=true&width=900&height=600' );
+		return esc_url( 'https://jigsaw.w3.org/css-validator/validator?warning=no&uri=' . urlencode( $this->get_custom_css_file_url() ) );
 	}
 
 	/**
-	 * Create a link that when clicked opens a thickbox window that shows the CSS validation results
+	 * Create a link that when clicked opens a new window that shows the CSS validation results
 	 * @param string $anchor Link anchor text
 	 * @return string A HTML link to validate the CSS
 	 */
 	private function validate_css_link($anchor) {
-		return '<a onlick="return false;" class="thickbox" href="' . $this->validate_css_url() . '" name="W3C CSS Validation Results">' . $anchor . '</a>';
+		return '<a target="_blank" href="' . $this->validate_css_url() . '" name="W3C CSS Validation Results">' . $anchor . '</a>';
 	}
 
 	/**
