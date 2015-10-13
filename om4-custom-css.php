@@ -14,7 +14,7 @@ License: GPLv2
 
 /*
 
-   Copyright 2012-2015 OM4 (email: info@om4.com.au    web: http://om4.com.au/)
+   Copyright 2012-2015 OM4 (email: info@om4.com.au    web: https://om4.com.au/)
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -262,7 +262,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 				lineNumbers: true, // Show line numbers
 				mode: "css", // CSS mode
 				autofocus: true, // Autofocus the cursor into the editor on page load
-				viewportMargin: Infinity
+				viewportMargin: Infinity // Expand the editor to the height of the code
 			});
 		</script>
 	<?php
