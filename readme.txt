@@ -1,8 +1,8 @@
 === OM4 Custom CSS ===
 Tags: custom css, css
-Requires at least: 3.7
-Tested up to: 4.2
-Stable tag: 1.0.8
+Requires at least: 4.0
+Tested up to: 4.4
+Stable tag: 1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -11,6 +11,8 @@ Write custom CSS rules using and easy to use interface in the WordPress dashboar
 == Description ==
 
 Custom CSS rules can be written and edited using an easy to use WordPress dashboard interface. No file editing required!
+
+Uses CSS syntax highlighting to help you write your CSS rules.
 
 Also features a one-click CSS validation button.
 
@@ -22,6 +24,10 @@ The Custom CSS rules are usually output the last thing output before </head>, ma
 1. Go to Appearance, Custom CSS and write some CSS rules!
 
 == Changelog ==
+
+= 1.1 =
+* CSS syntax highlighting.
+* Fix CSS validate buttons (they now open in a new window because the CSS validator can no longer be embedded in an iframe thickbox).
 
 = 1.0.8 =
 * Security enhancement for add_query_arg usage.
