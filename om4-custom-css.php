@@ -239,8 +239,8 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 				</form>
 		</div>
 	</div>
-		<script src="<?php esc_attr_e( $this->plugin_url() ); ?>/CodeMirror/lib/codemirror.js?v=5.5.0"></script>
-		<link rel="stylesheet" href="<?php esc_attr_e( $this->plugin_url() ); ?>/CodeMirror/lib/codemirror.css?v=5.5.0">
+		<script src="<?php esc_attr_e( $this->plugin_url() ); ?>/CodeMirror/lib/codemirror.js?v=5.7.0"></script>
+		<link rel="stylesheet" href="<?php esc_attr_e( $this->plugin_url() ); ?>/CodeMirror/lib/codemirror.css?v=5.7.0">
 		<style type="text/css">
 			.CodeMirror {
 				height: auto;
