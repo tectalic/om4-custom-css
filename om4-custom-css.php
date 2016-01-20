@@ -3,7 +3,7 @@
 Plugin Name: OM4 Custom CSS
 Plugin URI: https://github.com/OM4/om4-custom-css
 Description: Add custom CSS rules using the WordPress Dashboard. Access via Dashboard, Appearance, Custom CSS.
-Version: 1.1
+Version: 1.2
 Author: OM4
 Author URI: https://github.com/OM4/
 Text Domain: om4-custom-css
@@ -238,8 +238,8 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 				</form>
 		</div>
 	</div>
-		<script src="<?php esc_attr_e( $this->plugin_url() ); ?>/CodeMirror/lib/codemirror.js?v=5.7.0"></script>
-		<link rel="stylesheet" href="<?php esc_attr_e( $this->plugin_url() ); ?>/CodeMirror/lib/codemirror.css?v=5.7.0">
+		<script src="<?php esc_attr_e( $this->plugin_url() ); ?>/CodeMirror/lib/codemirror.js?v=5.10.0"></script>
+		<link rel="stylesheet" href="<?php esc_attr_e( $this->plugin_url() ); ?>/CodeMirror/lib/codemirror.css?v=5.10.0">
 		<style type="text/css">
 			.CodeMirror {
 				height: auto;
@@ -251,7 +251,8 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 				lineNumbers: true, // Show line numbers
 				mode: "css", // CSS mode
 				autofocus: true, // Autofocus the cursor into the editor on page load
-				viewportMargin: Infinity // Expand the editor to the height of the code
+				viewportMargin: Infinity, // Expand the editor to the height of the code
+				lineWrapping: true // Line Wrapping
 			});
 		</script>
 	<?php

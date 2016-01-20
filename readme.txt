@@ -1,8 +1,9 @@
 === OM4 Custom CSS ===
-Tags: custom css, css
+Tags: custom css, css, css editor
 Requires at least: 4.0
-Tested up to: 4.4
-Stable tag: 1.1
+Tested up to: 4.4.1
+Stable tag: 1.2
+Contributors: jamescollins
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,6 +25,10 @@ The Custom CSS rules are usually output the last thing output before </head>, ma
 1. Go to Appearance, Custom CSS and write some CSS rules!
 
 == Changelog ==
+
+= 1.2 =
+* CSS Editor: wrap long lines so there is no need to scroll horizontally.
+* CSS Editor: update editor to latest version.
 
 = 1.1 =
 * CSS syntax highlighting.
@@ -58,3 +63,8 @@ The Custom CSS rules are usually output the last thing output before </head>, ma
 
 = 1.0.0 =
 * Initial release.
+
+== Upgrade Notice ==
+
+= 1.2 =
+* CSS Editor: wrap long lines so there is no need to scroll horizontally.
