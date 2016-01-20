@@ -251,7 +251,8 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 				lineNumbers: true, // Show line numbers
 				mode: "css", // CSS mode
 				autofocus: true, // Autofocus the cursor into the editor on page load
-				viewportMargin: Infinity // Expand the editor to the height of the code
+				viewportMargin: Infinity, // Expand the editor to the height of the code
+				lineWrapping: true // Line Wrapping
 			});
 		</script>
 	<?php
