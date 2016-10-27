@@ -3,7 +3,7 @@
 Plugin Name: OM4 Custom CSS
 Plugin URI: https://github.com/OM4/om4-custom-css
 Description: Add custom CSS rules using the WordPress Dashboard. Access via Dashboard, Appearance, Custom CSS.
-Version: 1.2
+Version: 1.4
 Author: OM4
 Author URI: https://github.com/OM4/
 Text Domain: om4-custom-css
@@ -14,7 +14,7 @@ License: GPLv2
 
 /*
 
-   Copyright 2012-2015 OM4 (email: info@om4.com.au    web: https://om4.com.au/)
+   Copyright 2012-2016 OM4 (email: plugins@om4.com.au    web: https://om4.com.au/)
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -94,6 +94,9 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 		} else if ( function_exists('woo_head') ) {
 			// WooTheme
 			$hook = 'woo_head';
+		} else if ( class_exists('FLTheme') ) {
+			// Beaver Builder Theme
+			$hook = 'fl_head';
 		}
 		add_action( $hook, array($this, 'output_custom_css_stylesheet'), 100000 );
 	}
@@ -238,8 +241,8 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 				</form>
 		</div>
 	</div>
-		<script src="<?php esc_attr_e( $this->plugin_url() ); ?>/CodeMirror/lib/codemirror.js?v=5.10.0"></script>
-		<link rel="stylesheet" href="<?php esc_attr_e( $this->plugin_url() ); ?>/CodeMirror/lib/codemirror.css?v=5.10.0">
+		<script src="<?php esc_attr_e( $this->plugin_url() ); ?>/CodeMirror/lib/codemirror.js?v=5.17.0"></script>
+		<link rel="stylesheet" href="<?php esc_attr_e( $this->plugin_url() ); ?>/CodeMirror/lib/codemirror.css?v=5.17.0">
 		<style type="text/css">
 			.CodeMirror {
 				height: auto;

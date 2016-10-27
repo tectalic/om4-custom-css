@@ -1,8 +1,8 @@
 === OM4 Custom CSS ===
 Tags: custom css, css, css editor
 Requires at least: 4.0
-Tested up to: 4.4.1
-Stable tag: 1.2
+Tested up to: 4.6
+Stable tag: 1.4
 Contributors: jamescollins
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -25,6 +25,11 @@ The Custom CSS rules are usually output the last thing output before </head>, ma
 1. Go to Appearance, Custom CSS and write some CSS rules!
 
 == Changelog ==
+= 1.4 =
+* If using the Beaver Builder WordPress theme, ensure OM4 CSS rules load after the theme's Custom CSS rules.
+
+= 1.3 =
+* CSS Editor: update editor to latest version.
 
 = 1.2 =
 * CSS Editor: wrap long lines so there is no need to scroll horizontally.
