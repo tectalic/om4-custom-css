@@ -242,8 +242,9 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 				</form>
 		</div>
 	</div>
-		<script src="<?php esc_attr_e( $this->plugin_url() ); ?>/CodeMirror/lib/codemirror.js?v=5.17.0"></script>
-		<link rel="stylesheet" href="<?php esc_attr_e( $this->plugin_url() ); ?>/CodeMirror/lib/codemirror.css?v=5.17.0">
+		<script src="<?php esc_attr_e( $this->plugin_url() ); ?>/CodeMirror/lib/codemirror.js?v=5.21.0"></script>
+		<link rel="stylesheet" href="<?php esc_attr_e( $this->plugin_url() ); ?>/CodeMirror/lib/codemirror.css?v=5.21.0">
+		<script src="<?php esc_attr_e( $this->plugin_url() ); ?>/CodeMirror/mode/css/css.js?v=5.21.0"></script>
 		<style type="text/css">
 			.CodeMirror {
 				height: auto;
@@ -253,7 +254,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 			var textArea = document.getElementById('css');
 			var myCodeMirror = CodeMirror.fromTextArea(textArea, {
 				lineNumbers: true, // Show line numbers
-				mode: "css", // CSS mode
+				mode: "text/x-scss", // SCSS mode as per http://codemirror.net/mode/css/scss.html
 				autofocus: true, // Autofocus the cursor into the editor on page load
 				viewportMargin: Infinity, // Expand the editor to the height of the code
 				lineWrapping: true // Line Wrapping
