@@ -3,7 +3,7 @@
 Plugin Name: OM4 Custom CSS
 Plugin URI: https://github.com/OM4/om4-custom-css
 Description: Add custom CSS rules using the WordPress Dashboard. Access via Dashboard, Appearance, Custom CSS.
-Version: 1.4
+Version: 1.5
 Author: OM4
 Author URI: https://github.com/OM4/
 Text Domain: om4-custom-css
@@ -54,6 +54,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 
 		if ( is_admin() ) {
 			add_action( 'admin_post_update_custom_css', array($this, 'dashboard_screen_save') );
+			add_action( 'wp_ajax_update_custom_css', array($this, 'dashboard_screen_save') );
 		} else {
 			add_action('init', array($this, 'init_frontend'), 100000 );
 		}
@@ -228,8 +229,8 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 			?>
 			<form action="<?php echo $this->form_action(); ?>" method="post">
 				<div style="float: right;"><?php echo $this->validate_css_button(); ?></div>
-				<p>To use <strong>Custom CSS</strong> rules to change the appearance of your site, enter them in this text box. Custom CSS rules will override your theme's CSS using the inheritance rules of CSS.</p>
-				<p class="submit"><input type="submit" name="submit" id="submit" class="button-primary" value="Save CSS Rules"></p>
+				<p>To use <strong>Custom CSS</strong> rules to change the appearance of your site, enter them in this text box. <a href=http://sass-lang.com/documentation/file.SASS_REFERENCE.html#css_extensions">SCSS/SASS syntax</a> (such as variables) can also be used.</p>
+				<p class="submit"><input type="submit" name="submit" id="submit" class="button-primary" value="Save CSS Rules"> <img class="loadingspinner" src="<?= admin_url( "images/wpspin_light-2x.gif" ); ?> " width="16" height="16" valign="middle" alt="Loading..." style="display: none;" /></p>
 				<?php
 				wp_editor( $this->get_custom_css(), 'css', $this->wp_editor_defaults );
 				?>
@@ -237,7 +238,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 				<?php
 				wp_nonce_field('update_custom_css');
 				?>
-				<p class="submit"><input type="submit" name="submit" id="submit" class="button-primary" value="Save CSS Rules"></p>
+				<p class="submit"><input type="submit" name="submit" id="submit" class="button-primary" value="Save CSS Rules"> <img class="loadingspinner" src="<?= admin_url( "images/wpspin_light-2x.gif" ); ?> " width="16" height="16" valign="middle" alt="Loading..." style="display: none;" /></p>
 				</form>
 		</div>
 	</div>
@@ -257,20 +258,90 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 				viewportMargin: Infinity, // Expand the editor to the height of the code
 				lineWrapping: true // Line Wrapping
 			});
+
+
+			/*
+			jQuery(window).keypress(function (event) {
+				if (!(event.which == 115 && event.ctrlKey) && !(event.which == 19)) return true;
+				event.preventDefault();
+				jQuery('#om4-header form').submit();
+//			    $("#container form input[name=save]").click();
+
+				return false;
+			});
+			*/
+
+
+			jQuery(document).ready(function ($) {
+
+				// Submit the CSS rules/form via AJAX
+				$('#om4-header form').submit(function (event) {
+					event.preventDefault();
+					$(this).find('input[type="submit"]').prop('disabled', true);
+					$(this).find('img.loadingspinner').show();
+					var data = $(this).serialize();
+					jQuery.ajax({
+						url: ajaxurl,
+						data: data,
+						dataType: 'json',
+						method: 'POST',
+						success: function (response) {
+							if (response.success) {
+								$('a.validatecss').prop('href', response.data.validateurl);
+							} else {
+								alert(response.data.message);
+							}
+						},
+						error: function () {
+							alert('<?php  _e( 'Error saving CSS rules. Please try again.', 'om4-custom-css' ); ?>');
+						},
+						complete: function () {
+							$('#om4-header form input[type="submit"]').prop('disabled', false);
+							$('#om4-header form img.loadingspinner').hide();
+						}
+					});
+
+				});
+
+			});
+
 		</script>
 	<?php
 	}
 
 	/**
-	 * Handler that saves the dashboard screen's options/values, then redirects back to the Dashboard Screen.
+	 * Handler that saves the dashboard screen's options/values via AJAX (or POST if JS not available).
 	 */
 	public function dashboard_screen_save() {
 
+		if ( wp_doing_ajax() ) {
+			// AJAX Save
+			$data = array();
+			if ( check_ajax_referer( 'update_custom_css' ) && $this->can_access_dashboard_screen() ) {
+				try {
+					$this->save_custom_css( stripslashes( $_POST['css'] ) );
+					$data['validateurl'] = $this->validate_css_url();
+					$data['cssurl']      = $this->get_custom_css_file_url();
+					wp_send_json_success( $data );
+				} catch ( Exception $ex ) {
+					$data['message'] = $ex->getMessage();
+					wp_send_json_error( $data );
+				}
+			} else {
+				wp_send_json_error();
+			}
+		}
+
+		// POST/Form save
 		$url = $this->dashboard_url();
 
 		if ( $this->can_access_dashboard_screen() ) {
 			check_admin_referer('update_custom_css');
-			$url = $this->save_custom_css( stripslashes($_POST['css']) ) ? $this->dashboard_url_saved() : $this->dashboard_url_saved_error();
+			try {
+				$url = $this->save_custom_css( stripslashes( $_POST['css'] ) ) ? $this->dashboard_url_saved() : $this->dashboard_url_saved_error();
+			} catch ( Exception $ex ) {
+				$url = $this->dashboard_url_saved_error();
+			}
 		}
 
 		wp_redirect( esc_url_raw( $url ) );
@@ -282,7 +353,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 	 * @param string $buttonText Button anchor text
 	 */
 	private function validate_css_button($buttonText = 'Validate CSS Rules') {
-		return '<a target="_blank" href="' . $this->validate_css_url() . '"><input type="button" name="W3C CSS Validation Results" value="' . $buttonText . '" class="button-secondary" style="margin-left: 3em;" /></a>';
+		return '<a class="validatecss" target="_blank" href="' . esc_html( $this->validate_css_url() ) . '"><input type="button" name="W3C CSS Validation Results" value="' . $buttonText . '" class="button-secondary" style="margin-left: 3em;" /></a>';
 	}
 
 	/**
@@ -290,7 +361,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 	 * @return string The URL to W3's CSS Validator prepopulated with the CSS file's URI
 	 */
 	private function validate_css_url() {
-		return esc_url( 'https://jigsaw.w3.org/css-validator/validator?warning=no&uri=' . urlencode( $this->get_custom_css_file_url() ) );
+		return 'https://jigsaw.w3.org/css-validator/validator?warning=no&uri=' . urlencode( $this->get_custom_css_file_url() );
 	}
 
 	/**
@@ -312,15 +383,20 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 	}
 
 	/**
-	 * Saves the existing custom CSS rules to the filesystem (uploads directory).
+	 * Saves the existing custom CSS rules to the filesystem (uploads directory),
+	 * after compiling the SCSS rules into compressed CSS.
 	 *
 	 * @return boolean False if the stylesheet could not be saved, true otherwise
 	 */
 	public function save_custom_css_to_file() {
 
-		$css = "/* CSS Generated " . date('r') . " by User ID " . get_current_user_id() . " */\n\n" . $this->get_custom_css();
+		require( 'includes/scssphp/scss.inc.php' );
 
-//      $random = time() . '-' . uniqid();
+		$css_compiler = new Leafo\ScssPhp\Compiler();
+		$css_compiler->setFormatter('Leafo\ScssPhp\Formatter\Crunched');
+		$css = $css_compiler->compile( $this->get_custom_css() );
+		$css = "/* CSS Generated " . date('r') . " by User ID " . get_current_user_id() . " */\n\n" . $css;
+
 		$random = time();
 		$filename = "custom-$random.css";
 
