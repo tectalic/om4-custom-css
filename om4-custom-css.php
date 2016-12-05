@@ -411,7 +411,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 		require( 'includes/scssphp/scss.inc.php' );
 
 		$css_compiler = new Leafo\ScssPhp\Compiler();
-		$css_compiler->setFormatter('Leafo\ScssPhp\Formatter\Crunched'); // Crunched/minified output
+//		$css_compiler->setFormatter('Leafo\ScssPhp\Formatter\Crunched'); // Crunched/minified output
 		$css = $css_compiler->compile( $this->get_custom_css() );
 		$css = "/* CSS Generated " . date('r') . " by User ID " . get_current_user_id() . " */\n\n" . $css;
 
