@@ -30,6 +30,7 @@ Note: requires PHP v5.4 or newer.
 = 1.5 =
 * Add support for SCSS/SASS.
 * Save rules via AJAX, which speeds up development.
+* Add translation support.
 * Note: requires PHP v5.4 or newer.
 
 = 1.4 =
