@@ -229,7 +229,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 			?>
 			<form action="<?php echo $this->form_action(); ?>" method="post">
 				<div style="float: right;"><?php echo $this->validate_css_button(); ?></div>
-				<p>To use <strong>Custom CSS</strong> rules to change the appearance of your site, enter them in this text box. <a href=http://sass-lang.com/documentation/file.SASS_REFERENCE.html#css_extensions">SCSS/SASS syntax</a> (such as variables) can also be used.</p>
+				<p>To use <strong>Custom CSS</strong> rules to change the appearance of your site, enter them in this text box. <a href=http://sass-lang.com/documentation/file.SASS_REFERENCE.html#css_extensions" target="_blank">SCSS/SASS syntax</a> (such as variables) can also be used.</p>
 				<p class="submit"><input type="submit" name="submit" id="submit" class="button-primary" value="Save CSS Rules"> <img class="loadingspinner" src="<?= admin_url( "images/wpspin_light-2x.gif" ); ?> " width="16" height="16" valign="middle" alt="Loading..." style="display: none;" /></p>
 				<?php
 				wp_editor( $this->get_custom_css(), 'css', $this->wp_editor_defaults );
@@ -371,7 +371,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 	 * @return string A HTML link to validate the CSS
 	 */
 	private function validate_css_link($anchor) {
-		return '<a target="_blank" href="' . $this->validate_css_url() . '" name="W3C CSS Validation Results">' . $anchor . '</a>';
+		return '<a target="_blank" href="' . esc_html( $this->validate_css_url() ) . '" name="W3C CSS Validation Results">' . $anchor . '</a>';
 	}
 
 	/**
