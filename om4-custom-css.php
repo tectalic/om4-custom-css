@@ -231,7 +231,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 			<form action="<?php echo $this->form_action(); ?>" method="post">
 				<div style="float: right;"><?php echo $this->validate_css_button(); ?></div>
 				<p><?php _e( 'To use <strong>Custom CSS</strong> rules to change the appearance of your site, enter them in this text box. <a href=http://sass-lang.com/documentation/file.SASS_REFERENCE.html#css_extensions" target="_blank">SCSS/SASS syntax</a> (such as variables and nesting) can also be used.', 'om4-custom-css' ); ?></p>
-				<p class="submit"><input type="submit" name="submit" id="submit" class="button-primary" value="<?php esc_html_e( 'Save CSS Rules', 'om4-custom-css' ); ?>"> <img class="loadingspinner" src="<?= admin_url( "images/wpspin_light-2x.gif" ); ?> " width="16" height="16" valign="middle" alt="<?php esc_html_e( 'Loading...', 'om4-custom-css' ); ?>" style="display: none;" /></p>
+				<p class="submit"><input type="submit" name="submit" id="submit" class="button-primary" value="<?php esc_html_e( 'Save CSS Rules', 'om4-custom-css' ); ?>" title="<?php esc_html_e( '(Cmd+Enter or Ctrl+Enter)', 'om4-custom-css' ); ?>"> <img class="loadingspinner" src="<?= admin_url( "images/wpspin_light-2x.gif" ); ?> " width="16" height="16" valign="middle" alt="<?php esc_html_e( 'Loading...', 'om4-custom-css' ); ?>" style="display: none;" /></p>
 				<?php
 				wp_editor( $this->get_custom_css(), 'css', $this->wp_editor_defaults );
 				?>
@@ -239,7 +239,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 				<?php
 				wp_nonce_field('update_custom_css');
 				?>
-				<p class="submit"><input type="submit" name="submit" id="submit" class="button-primary" value="<?php esc_html_e( 'Save CSS Rules', 'om4-custom-css' ); ?>"> <img class="loadingspinner" src="<?= admin_url( "images/wpspin_light-2x.gif" ); ?> " width="16" height="16" valign="middle" alt="<?php esc_html_e( 'Loading...', 'om4-custom-css' ); ?>" style="display: none;" /></p>
+				<p class="submit"><input type="submit" name="submit" id="submit" class="button-primary" value="<?php esc_html_e( 'Save CSS Rules', 'om4-custom-css' ); ?>" title="<?php esc_html_e( '(Cmd+Enter or Ctrl+Enter)', 'om4-custom-css' ); ?>"> <img class="loadingspinner" src="<?= admin_url( "images/wpspin_light-2x.gif" ); ?> " width="16" height="16" valign="middle" alt="<?php esc_html_e( 'Loading...', 'om4-custom-css' ); ?>" style="display: none;" /></p>
 				</form>
 		</div>
 	</div>
@@ -261,18 +261,14 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 				lineWrapping: true // Line Wrapping
 			});
 
-
-			/*
-			jQuery(window).keypress(function (event) {
-				if (!(event.which == 115 && event.ctrlKey) && !(event.which == 19)) return true;
-				event.preventDefault();
-				jQuery('#om4-header form').submit();
-//			    $("#container form input[name=save]").click();
-
-				return false;
+			// Save the CSS rules using the Cmd+Enter (or Ctrl+Enter) keyboard shortcut as per https://codemirror.net/doc/manual.html#keymaps
+			myCodeMirror.setOption("extraKeys", {
+			  'Cmd-Enter': function(cm) {
+					jQuery('#om4-header form').submit();
+			  },'Ctrl-Enter': function(cm) {
+					jQuery('#om4-header form').submit();
+			  }
 			});
-			*/
-
 
 			jQuery(document).ready(function ($) {
 
