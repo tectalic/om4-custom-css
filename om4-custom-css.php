@@ -113,7 +113,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 	}
 
 	/**
-	 * Saves the custom CSS  rules to the database so that they can be edited later.
+	 * Saves the custom CSS rules (uncomplied SCSS/SASS) to the database so that they can be edited later.
 	 *
 	 * @return boolean False if option was not added and true if option was added
 	 */
@@ -131,6 +131,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 	 * @param string $css The CSS
 	 *
 	 * @return bool True on success, false on failure
+	 * @throws Exception if compilation/saving fails.
 	 */
 	private function save_custom_css( $css ) {
 		$this->set_custom_css_last_saved_timestamp();
@@ -326,14 +327,19 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 					wp_send_json_success( $data );
 				} catch ( Exception $ex ) {
 					$data['message'] = $ex->getMessage();
+					// Clean up the error message, removing stdin mention but preserving the line number.
+					$data['message'] = str_replace( ' (stdin) ', '', $data['message'] );
 					wp_send_json_error( $data );
 				}
 			} else {
-				wp_send_json_error();
+				// User doesn't have permission to access this screen
+				$data = array();
+				$data['message'] = __( 'Access Denied. Please try again.', 'om4-custom-css' );
+				wp_send_json_error( $data );
 			}
 		}
 
-		// POST/Form save
+		// POST/Form (non JS) save
 		$url = $this->dashboard_url();
 
 		if ( $this->can_access_dashboard_screen() ) {
@@ -343,6 +349,9 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 			} catch ( Exception $ex ) {
 				$url = $this->dashboard_url_saved_error();
 			}
+		} else {
+			// User doesn't have permission to access this screen
+			$url = $this->dashboard_url_saved_error();
 		}
 
 		wp_redirect( esc_url_raw( $url ) );
@@ -384,10 +393,10 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 	}
 
 	/**
-	 * Saves the existing custom CSS rules to the filesystem (uploads directory),
-	 * after compiling the SCSS rules into compressed CSS.
+	 * Compiles the SCSS/SASS custom CSS rules, then saves them to the filesystem (uploads directory).
 	 *
 	 * @return boolean False if the stylesheet could not be saved, true otherwise
+	 * @throws Exception if the SCSS compilation fails, or the stylesheet file can't be created.
 	 */
 	public function save_custom_css_to_file() {
 
@@ -421,8 +430,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 
 		} else {
 			// Error saving css file. This really shouldn't happen, but just in case.
-			trigger_error( sprintf( __( 'Error creating Custom CSS stylesheet: %s', 'om4-custom-css' ), $filename ) );
-			return false;
+			throw new Exception( sprintf( __( 'Error creating Custom CSS stylesheet: %s', 'om4-custom-css' ), $filename ) );
 		}
 		return true;
 	}
