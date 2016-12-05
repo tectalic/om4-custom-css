@@ -212,26 +212,26 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 			<h2><?php echo esc_attr($this->screen_title); ?></h2>
 			<?php
 			if ( !$this->can_access_dashboard_screen() ) {
-				echo '<div class="error"><p>You do not have permission to access this feature.</p></div></div></div>';
+				echo '<div class="error"><p>' . esc_html__( 'You do not have permission to access this feature.', 'om4-custom-css' ); ?></p></div>';
 				return;
 			}
 
 			if ( isset($_GET['updated']) && $_GET['updated'] == 'true' ) {
 				?>
-				<div id="message" class="updated fade"><p>Custom CSS rules saved. You can <a href="<?php echo site_url(); ?>">view your site by clicking here</a>.</p></div>
-				<div id="message" class="updated fade"><p>It is recommended that you <?php echo $this->validate_css_link('validate your CSS rules'); ?> to help you find errors, typos and incorrect uses of CSS.</p></div>
+				<div id="message" class="updated fade"><p><?php printf( __( 'Custom CSS rules saved. You can <a href="%s">view your site by clicking here</a>.', 'om4-custom-css' ), esc_attr( site_url() ) ); ?></p></div>
+				<div id="message" class="updated fade"><p><?php printf( __( 'It is recommended that you %1$svalidate your CSS rules%2$s to help you find errors, typos and incorrect uses of CSS.', 'om4-custom-css' ), $this->validate_css_link_start(), '</a>' ); ?></p></div>
 				<?php
 			} else if ( isset($_GET['updated']) && $_GET['updated'] == 'false' ) {
 				?>
-				<div id="message" class="error fade"><p>There was an error saving your Custom CSS rules. Please try again.</p></div>
+				<div id="message" class="error fade"><p><?php esc_html_e( 'There was an error saving your Custom CSS rules. Please try again.', 'om4-custom-css' ); ?></p></div>
 				<?php
 			}
 
 			?>
 			<form action="<?php echo $this->form_action(); ?>" method="post">
 				<div style="float: right;"><?php echo $this->validate_css_button(); ?></div>
-				<p>To use <strong>Custom CSS</strong> rules to change the appearance of your site, enter them in this text box. <a href=http://sass-lang.com/documentation/file.SASS_REFERENCE.html#css_extensions" target="_blank">SCSS/SASS syntax</a> (such as variables) can also be used.</p>
-				<p class="submit"><input type="submit" name="submit" id="submit" class="button-primary" value="Save CSS Rules"> <img class="loadingspinner" src="<?= admin_url( "images/wpspin_light-2x.gif" ); ?> " width="16" height="16" valign="middle" alt="Loading..." style="display: none;" /></p>
+				<p><?php _e( 'To use <strong>Custom CSS</strong> rules to change the appearance of your site, enter them in this text box. <a href=http://sass-lang.com/documentation/file.SASS_REFERENCE.html#css_extensions" target="_blank">SCSS/SASS syntax</a> (such as variables and nesting) can also be used.', 'om4-custom-css' ); ?></p>
+				<p class="submit"><input type="submit" name="submit" id="submit" class="button-primary" value="<?php esc_html_e( 'Save CSS Rules', 'om4-custom-css' ); ?>"> <img class="loadingspinner" src="<?= admin_url( "images/wpspin_light-2x.gif" ); ?> " width="16" height="16" valign="middle" alt="<?php esc_html_e( 'Loading...', 'om4-custom-css' ); ?>" style="display: none;" /></p>
 				<?php
 				wp_editor( $this->get_custom_css(), 'css', $this->wp_editor_defaults );
 				?>
@@ -239,7 +239,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 				<?php
 				wp_nonce_field('update_custom_css');
 				?>
-				<p class="submit"><input type="submit" name="submit" id="submit" class="button-primary" value="Save CSS Rules"> <img class="loadingspinner" src="<?= admin_url( "images/wpspin_light-2x.gif" ); ?> " width="16" height="16" valign="middle" alt="Loading..." style="display: none;" /></p>
+				<p class="submit"><input type="submit" name="submit" id="submit" class="button-primary" value="<?php esc_html_e( 'Save CSS Rules', 'om4-custom-css' ); ?>"> <img class="loadingspinner" src="<?= admin_url( "images/wpspin_light-2x.gif" ); ?> " width="16" height="16" valign="middle" alt="<?php esc_html_e( 'Loading...', 'om4-custom-css' ); ?>" style="display: none;" /></p>
 				</form>
 		</div>
 	</div>
@@ -276,7 +276,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 
 			jQuery(document).ready(function ($) {
 
-				// Submit the CSS rules/form via AJAX
+				// Submit/save the CSS rules via AJAX
 				$('#om4-header form').submit(function (event) {
 					event.preventDefault();
 					$(this).find('input[type="submit"]').prop('disabled', true);
@@ -304,9 +304,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 					});
 
 				});
-
 			});
-
 		</script>
 	<?php
 	}
@@ -360,10 +358,9 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 
 	/**
 	 * Create a button that when clicked opens a new window that shows the CSS validation results
-	 * @param string $buttonText Button anchor text
 	 */
-	private function validate_css_button($buttonText = 'Validate CSS Rules') {
-		return '<a class="validatecss" target="_blank" href="' . esc_html( $this->validate_css_url() ) . '"><input type="button" name="W3C CSS Validation Results" value="' . $buttonText . '" class="button-secondary" style="margin-left: 3em;" /></a>';
+	private function validate_css_button() {
+		return '<a class="validatecss" target="_blank" href="' . esc_html( $this->validate_css_url() ) . '"><input type="button" name="' . esc_attr__( 'W3C CSS Validation Results', 'om4-custom-css' ) . '" value="' . esc_html__( 'Validate CSS Rules', 'om4-custom-css' ) . '" class="button-secondary" style="margin-left: 3em;" /></a>';
 	}
 
 	/**
@@ -379,8 +376,8 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 	 * @param string $anchor Link anchor text
 	 * @return string A HTML link to validate the CSS
 	 */
-	private function validate_css_link($anchor) {
-		return '<a target="_blank" href="' . esc_html( $this->validate_css_url() ) . '" name="W3C CSS Validation Results">' . $anchor . '</a>';
+	private function validate_css_link_start() {
+		return '<a target="_blank" class="validatecss" href="' . esc_html( $this->validate_css_url() ) . '" name="' . __('W3C CSS Validation Results', 'om4-custom-css') . '">';
 	}
 
 	/**
