@@ -45,6 +45,8 @@ if ( ! class_exists( 'OM4_Plugin_Appearance' ) )
  */
 class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 
+	protected $codemirror_version = '5.21.0';
+
 	public function __construct() {
 
 		$this->screen_title = 'Custom CSS';
@@ -207,23 +209,29 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 	 */
 	public function dashboard_screen() {
 		?>
-	<div class='wrap'>
-		<div id="om4-header">
-			<h2><?php echo esc_attr($this->screen_title); ?></h2>
-			<?php
-			if ( !$this->can_access_dashboard_screen() ) {
-				echo '<div class="error"><p>' . esc_html__( 'You do not have permission to access this feature.', 'om4-custom-css' ); ?></p></div>';
-				return;
+		<div class='wrap'>
+			<div id="om4-header">
+				<h2><?php echo esc_attr( $this->screen_title ); ?></h2>
+				<?php
+				if ( ! $this->can_access_dashboard_screen() ) {
+					echo '<div class="error"><p>' . esc_html__( 'You do not have permission to access this feature.', 'om4-custom-css' ) . '</p></div>';
+					return;
 			}
 
 			if ( isset($_GET['updated']) && $_GET['updated'] == 'true' ) {
-				?>
-				<div id="message" class="updated fade"><p><?php printf( __( 'Custom CSS rules saved. You can <a href="%s">view your site by clicking here</a>.', 'om4-custom-css' ), esc_attr( site_url() ) ); ?></p></div>
-				<div id="message" class="updated fade"><p><?php printf( __( 'It is recommended that you %1$svalidate your CSS rules%2$s to help you find errors, typos and incorrect uses of CSS.', 'om4-custom-css' ), $this->validate_css_link_start(), '</a>' ); ?></p></div>
-				<?php
+			?>
+			<div id="message" class="updated fade">
+				<p><?php printf( __( 'Custom CSS rules saved. You can <a href="%s">view your site by clicking here</a>.', 'om4-custom-css' ), esc_attr( site_url() ) ); ?></p>
+			</div>
+			<div id="message" class="updated fade">
+				<p><?php printf( __( 'It is recommended that you %1$svalidate your CSS rules%2$s to help you find errors, typos and incorrect uses of CSS.', 'om4-custom-css' ), $this->validate_css_link_start(), '</a>' ); ?></p>
+			</div>
+			<?php
 			} else if ( isset($_GET['updated']) && $_GET['updated'] == 'false' ) {
 				?>
-				<div id="message" class="error fade"><p><?php esc_html_e( 'There was an error saving your Custom CSS rules. Please try again.', 'om4-custom-css' ); ?></p></div>
+				<div id="message" class="error fade">
+					<p><?php esc_html_e( 'There was an error saving your Custom CSS rules. Please try again.', 'om4-custom-css' ); ?></p>
+				</div>
 				<?php
 			}
 
@@ -231,21 +239,48 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 			<form action="<?php echo $this->form_action(); ?>" method="post">
 				<div style="float: right;"><?php echo $this->validate_css_button(); ?></div>
 				<p><?php _e( 'To use <strong>Custom CSS</strong> rules to change the appearance of your site, enter them in this text box. <a href=http://sass-lang.com/documentation/file.SASS_REFERENCE.html#css_extensions" target="_blank">SCSS/SASS syntax</a> (such as variables and nesting) can also be used.', 'om4-custom-css' ); ?></p>
-				<p class="submit"><input type="submit" name="submit" id="submit" class="button-primary" value="<?php esc_html_e( 'Save CSS Rules', 'om4-custom-css' ); ?>" title="<?php esc_html_e( '(Cmd+Enter or Ctrl+Enter)', 'om4-custom-css' ); ?>"> <img class="loadingspinner" src="<?= admin_url( "images/wpspin_light-2x.gif" ); ?> " width="16" height="16" valign="middle" alt="<?php esc_html_e( 'Loading...', 'om4-custom-css' ); ?>" style="display: none;" /></p>
+				<p class="submit">
+					<input type="submit" name="submit" id="submit" class="button-primary" value="<?php esc_html_e( 'Save CSS Rules', 'om4-custom-css' ); ?>" title="<?php esc_html_e( '(Cmd+Enter or Ctrl+Enter)', 'om4-custom-css' ); ?>">
+					<img class="loadingspinner" src="<?= admin_url( "images/wpspin_light-2x.gif" ); ?> " width="16" height="16" valign="middle" alt="<?php esc_html_e( 'Loading...', 'om4-custom-css' ); ?>" style="display: none;" />
+				</p>
 				<?php
 				wp_editor( $this->get_custom_css(), 'css', $this->wp_editor_defaults );
 				?>
 				<input type="hidden" name="action" value="update_custom_css" />
 				<?php
-				wp_nonce_field('update_custom_css');
+				wp_nonce_field( 'update_custom_css' );
 				?>
-				<p class="submit"><input type="submit" name="submit" id="submit" class="button-primary" value="<?php esc_html_e( 'Save CSS Rules', 'om4-custom-css' ); ?>" title="<?php esc_html_e( '(Cmd+Enter or Ctrl+Enter)', 'om4-custom-css' ); ?>"> <img class="loadingspinner" src="<?= admin_url( "images/wpspin_light-2x.gif" ); ?> " width="16" height="16" valign="middle" alt="<?php esc_html_e( 'Loading...', 'om4-custom-css' ); ?>" style="display: none;" /></p>
-				</form>
+				<p class="submit">
+					<input type="submit" name="submit" id="submit" class="button-primary" value="<?php esc_html_e( 'Save CSS Rules', 'om4-custom-css' ); ?>" title="<?php esc_html_e( '(Cmd+Enter or Ctrl+Enter)', 'om4-custom-css' ); ?>">
+					<img class="loadingspinner" src="<?= admin_url( "images/wpspin_light-2x.gif" ); ?> " width="16" height="16" valign="middle" alt="<?php esc_html_e( 'Loading...', 'om4-custom-css' ); ?>" style="display: none;" />
+				</p>
+			</form>
 		</div>
-	</div>
-		<script src="<?php esc_attr_e( $this->plugin_url() ); ?>/CodeMirror/lib/codemirror.js?v=5.21.0"></script>
-		<link rel="stylesheet" href="<?php esc_attr_e( $this->plugin_url() ); ?>/CodeMirror/lib/codemirror.css?v=5.21.0">
-		<script src="<?php esc_attr_e( $this->plugin_url() ); ?>/CodeMirror/mode/css/css.js?v=5.21.0"></script>
+		</div>
+		<?php
+
+		// CSS Editor JS/CSS
+		wp_enqueue_script( 'om4_custom_css_codemirror', $this->plugin_url() . '/CodeMirror/lib/codemirror.js', array( 'jquery' ), $this->codemirror_version );
+		wp_enqueue_script( 'om4_custom_css_codemirror_css_mode', $this->plugin_url() . '/CodeMirror/mode/css/css.js', array( 'om4_custom_css_codemirror' ), $this->codemirror_version );
+		wp_enqueue_style( 'om4_custom_css_codemirror', $this->plugin_url() . '/CodeMirror/lib/codemirror.css', array(), $this->codemirror_version );
+
+		add_action( 'admin_print_footer_scripts', array( $this, 'admin_print_footer_scripts' ) );
+
+		// Translatable strings used in JS
+		$formlabels = array(
+				'saving'  => __( 'Saving...', 'om4-custom-css' ),
+				'default' => __( 'Save CSS Rules', 'om4-custom-css' )
+		);
+		wp_localize_script( 'om4_custom_css_codemirror', 'om4_custom_css', $formlabels );
+	}
+
+	/**
+	 * CSS editor JS/CSS
+	 * Initializes CodeMirror editor, sets up AJAX save events and keyboard shortcuts.
+	 */
+	public function admin_print_footer_scripts() {
+
+		?>
 		<style type="text/css">
 			.CodeMirror {
 				height: auto;
@@ -275,7 +310,8 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 				// Submit/save the CSS rules via AJAX
 				$('#om4-header form').submit(function (event) {
 					event.preventDefault();
-					$(this).find('input[type="submit"]').prop('disabled', true);
+					$(this).find('input[type="submit"]').prop('disabled', true).prop( 'value', om4_custom_css.saving )
+
 					$(this).find('img.loadingspinner').show();
 					var data = $(this).serialize();
 					jQuery.ajax({
@@ -294,7 +330,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 							alert('<?php  _e( 'Error saving CSS rules. Please try again.', 'om4-custom-css' ); ?>');
 						},
 						complete: function () {
-							$('#om4-header form input[type="submit"]').prop('disabled', false);
+							$('#om4-header form input[type="submit"]').prop('disabled', false).prop( 'value', om4_custom_css.default );
 							$('#om4-header form img.loadingspinner').hide();
 						}
 					});
