@@ -310,11 +310,22 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 	}
 
 	/**
+	 * Determines whether the current request is a WordPress Ajax request.
+	 *
+	 * A wrapper function for WP 4.6 and older compatibility, because wp_doing_ajax() was only added in 4.7
+	 *
+	 * @return bool
+	 */
+	protected function is_doing_ajax() {
+		return function_exists( 'wp_doing_ajax' ) ? wp_doing_ajax() : defined( 'DOING_AJAX' ) && DOING_AJAX;
+	}
+
+	/**
 	 * Handler that saves the dashboard screen's options/values via AJAX (or POST if JS not available).
 	 */
 	public function dashboard_screen_save() {
 
-		if ( wp_doing_ajax() ) {
+		if ( $this->is_doing_ajax() ) {
 			// AJAX Save
 			$data = array();
 			if ( check_ajax_referer( 'update_custom_css' ) && $this->can_access_dashboard_screen() ) {
@@ -400,7 +411,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 		require( 'includes/scssphp/scss.inc.php' );
 
 		$css_compiler = new Leafo\ScssPhp\Compiler();
-		$css_compiler->setFormatter('Leafo\ScssPhp\Formatter\Crunched');
+		$css_compiler->setFormatter('Leafo\ScssPhp\Formatter\Crunched'); // Crunched/minified output
 		$css = $css_compiler->compile( $this->get_custom_css() );
 		$css = "/* CSS Generated " . date('r') . " by User ID " . get_current_user_id() . " */\n\n" . $css;
 
