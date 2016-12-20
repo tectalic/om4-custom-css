@@ -32,8 +32,9 @@ License: GPLv2
 */
 
 
-if ( ! class_exists( 'OM4_Plugin_Appearance' ) )
-	require_once('includes/OM4_Plugin_Appearance.php');
+if ( ! class_exists( 'OM4_Plugin_Appearance' ) ) {
+	require_once( 'includes/OM4_Plugin_Appearance.php' );
+}
 
 
 /**
@@ -45,6 +46,11 @@ if ( ! class_exists( 'OM4_Plugin_Appearance' ) )
  */
 class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 
+	/**
+	 * CodeMirror version number (used when enqueing static JS/CSS files).
+	 *
+	 * @var string
+	 */
 	protected $codemirror_version = '5.21.0';
 
 	public function __construct() {
@@ -259,17 +265,17 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 		</div>
 		<?php
 
-		// CSS Editor JS/CSS
+		// CSS Editor JS/CSS.
 		wp_enqueue_script( 'om4_custom_css_codemirror', $this->plugin_url() . '/CodeMirror/lib/codemirror.js', array( 'jquery' ), $this->codemirror_version );
 		wp_enqueue_script( 'om4_custom_css_codemirror_css_mode', $this->plugin_url() . '/CodeMirror/mode/css/css.js', array( 'om4_custom_css_codemirror' ), $this->codemirror_version );
 		wp_enqueue_style( 'om4_custom_css_codemirror', $this->plugin_url() . '/CodeMirror/lib/codemirror.css', array(), $this->codemirror_version );
 
 		add_action( 'admin_print_footer_scripts', array( $this, 'admin_print_footer_scripts' ) );
 
-		// Translatable strings used in JS
+		// Translatable strings used in JS.
 		$formlabels = array(
 				'saving'  => __( 'Saving...', 'om4-custom-css' ),
-				'default' => __( 'Save CSS Rules', 'om4-custom-css' )
+				'default' => __( 'Save CSS Rules', 'om4-custom-css' ),
 		);
 		wp_localize_script( 'om4_custom_css_codemirror', 'om4_custom_css', $formlabels );
 	}
@@ -361,7 +367,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 	public function dashboard_screen_save() {
 
 		if ( $this->is_doing_ajax() ) {
-			// AJAX Save
+			// AJAX Save.
 			$data = array();
 			if ( check_ajax_referer( 'update_custom_css' ) && $this->can_access_dashboard_screen() ) {
 				try {
@@ -376,14 +382,14 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 					wp_send_json_error( $data );
 				}
 			} else {
-				// User doesn't have permission to access this screen
+				// User doesn't have permission to access this screen.
 				$data = array();
 				$data['message'] = __( 'Access Denied. Please try again.', 'om4-custom-css' );
 				wp_send_json_error( $data );
 			}
 		}
 
-		// POST/Form (non JS) save
+		// POST/Form (non JS) save.
 		$url = $this->dashboard_url();
 
 		if ( $this->can_access_dashboard_screen() ) {
@@ -394,7 +400,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 				$url = $this->dashboard_url_saved_error();
 			}
 		} else {
-			// User doesn't have permission to access this screen
+			// User doesn't have permission to access this screen.
 			$url = $this->dashboard_url_saved_error();
 		}
 
