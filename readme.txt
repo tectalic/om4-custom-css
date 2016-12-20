@@ -7,11 +7,11 @@ Contributors: jamescollins
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Write custom CSS rules using and easy to use interface in the WordPress dashboard.
+Write custom CSS rules using and easy to use interface in the WordPress dashboard. No theme editing or child theme required!
 
 == Description ==
 
-Custom CSS rules can be written and edited using an easy to use WordPress dashboard interface. No file editing required!
+Write custom CSS rules using and easy to use interface in the WordPress dashboard. No theme editing or child theme required!
 
 SCSS/SASS syntax (such as variables) can also be used.
 
@@ -25,6 +25,8 @@ Note: requires PHP v5.4 or newer.
 
 1. Activate the plugin.
 1. Go to Appearance, Custom CSS and write some CSS rules!
+1. Save your CSS rules using the convenient Cmd+Enter (Mac) or Ctrl+Enter (PC) keyboard shortcut.
+1. Validate your CSS rules using the one-click CSS validator button.
 
 == Changelog ==
 = 1.5.1 =
