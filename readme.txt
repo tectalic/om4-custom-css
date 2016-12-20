@@ -2,7 +2,7 @@
 Tags: custom css, css, css editor
 Requires at least: 4.0
 Tested up to: 4.7
-Stable tag: 1.5
+Stable tag: 1.5.1
 Contributors: jamescollins
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -27,6 +27,9 @@ Note: requires PHP v5.4 or newer.
 1. Go to Appearance, Custom CSS and write some CSS rules!
 
 == Changelog ==
+= 1.5.1 =
+* CSS Editor: update before saving via Cmd+Enter.
+
 = 1.5 =
 * Add support for SCSS/SASS.
 * Save rules via AJAX, which speeds up development.
