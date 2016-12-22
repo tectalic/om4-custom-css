@@ -309,13 +309,24 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 				lineWrapping: true // Line Wrapping
 			});
 
-			// Save the CSS rules using the Cmd+Enter (or Ctrl+Enter) keyboard shortcut as per https://codemirror.net/doc/manual.html#keymaps
+			// Save the CSS rules using keyboard shortcuts as per https://codemirror.net/doc/manual.html#keymaps
 			// Manually save the CodeMirror instance first, so that the textarea is updated with the latest changes.
+			// Valid keyboard shortcuts are:
+			// Cmd+Enter
+			// Ctrl+Enter
+			// Ctrl+Shift+S
+			// Cmd+Shift+S
 			myCodeMirror.setOption("extraKeys", {
 			  'Cmd-Enter': function(cm) {
 				  myCodeMirror.save();
 				  jQuery('#om4-header form').submit();
 			  },'Ctrl-Enter': function(cm) {
+				  myCodeMirror.save();
+				  jQuery('#om4-header form').submit();
+			  },'Shift-Ctrl-S': function(cm) {
+				  myCodeMirror.save();
+				  jQuery('#om4-header form').submit();
+			  },'Shift-Cmd-S': function(cm) {
 				  myCodeMirror.save();
 				  jQuery('#om4-header form').submit();
 			  }
