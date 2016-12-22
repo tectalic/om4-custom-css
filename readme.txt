@@ -25,12 +25,13 @@ Note: requires PHP v5.4 or newer.
 
 1. Activate the plugin.
 1. Go to Appearance, Custom CSS and write some CSS rules!
-1. Save your CSS rules using the convenient Cmd+Enter (Mac) or Ctrl+Enter (PC) keyboard shortcut.
+1. Save your CSS rules using the one of the convenient keyboard shortcuts Mac: Cmd+Enter or Cmd+Shift+S, or PC: Ctrl+Enter or Ctrl+Shift+S
 1. Validate your CSS rules using the one-click CSS validator button.
 
 == Changelog ==
 = 1.5.1 =
-* CSS Editor: update before saving via Cmd+Enter.
+* Save the CSS rules using the Cmd+Shift+S (or Ctrl+Shift+S) keyboard shortcut. The Cmd+Enter (or Ctrl+Enter) shortcut still works too.
+* CSS Editor: update before saving via a keyboard shortcut.
 
 = 1.5 =
 * Add support for SCSS/SASS.
