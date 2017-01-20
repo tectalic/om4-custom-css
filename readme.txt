@@ -1,8 +1,8 @@
 === OM4 Custom CSS ===
 Tags: custom css, css, css editor
 Requires at least: 4.0
-Tested up to: 4.7
-Stable tag: 1.5.1
+Tested up to: 4.7.1
+Stable tag: 1.5.2
 Contributors: jamescollins
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -29,6 +29,10 @@ Note: requires PHP v5.4 or newer.
 1. Validate your CSS rules using the one-click CSS validator button.
 
 == Changelog ==
+
+= 1.5.2 =
+* Improved visual feedback when saving Custom CSS rules. The editor's background colour now turns grey while saving.
+
 = 1.5.1 =
 * Save the CSS rules using the Cmd+Shift+S (or Ctrl+Shift+S) keyboard shortcut. The Cmd+Enter (or Ctrl+Enter) shortcut still works too.
 * CSS Editor: update before saving via a keyboard shortcut.

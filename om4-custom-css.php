@@ -3,7 +3,7 @@
 Plugin Name: OM4 Custom CSS
 Plugin URI: https://github.com/OM4/om4-custom-css
 Description: Add custom CSS rules using the WordPress Dashboard. Access via Dashboard, Appearance, Custom CSS.
-Version: 1.5.1
+Version: 1.5.2
 Author: OM4
 Author URI: https://github.com/OM4/
 Text Domain: om4-custom-css
@@ -337,8 +337,9 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 				// Submit/save the CSS rules via AJAX
 				$('#om4-header form').submit(function (event) {
 					event.preventDefault();
+					// When saving update the Save buttons, add a spinning wheel, and set the editor background colour to grey
 					$(this).find('input[type="submit"]').prop('disabled', true).prop( 'value', om4_custom_css.saving )
-
+					$('#wp-css-editor-container > .CodeMirror').css('background-color', '#dfdfdf');
 					$(this).find('img.loadingspinner').show();
 					var data = $(this).serialize();
 					jQuery.ajax({
@@ -359,6 +360,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 						complete: function () {
 							$('#om4-header form input[type="submit"]').prop('disabled', false).prop( 'value', om4_custom_css.default );
 							$('#om4-header form img.loadingspinner').hide();
+							$('#wp-css-editor-container > .CodeMirror').css('background-color', '');
 						}
 					});
 
