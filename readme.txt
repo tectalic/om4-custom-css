@@ -1,30 +1,49 @@
 === OM4 Custom CSS ===
 Tags: custom css, css, css editor
-Requires at least: 4.0
-Tested up to: 4.6
-Stable tag: 1.4
+Requires at least: 4.6
+Tested up to: 4.7.1
+Stable tag: 1.5.2
 Contributors: jamescollins
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Write custom CSS rules using and easy to use interface in the WordPress dashboard.
+Write custom CSS rules using and easy to use interface in the WordPress dashboard. No theme editing or child theme required!
 
 == Description ==
 
-Custom CSS rules can be written and edited using an easy to use WordPress dashboard interface. No file editing required!
+Write custom CSS rules using and easy to use interface in the WordPress dashboard. No theme editing or child theme required!
 
-Uses CSS syntax highlighting to help you write your CSS rules.
+SCSS/SASS syntax (such as variables) can also be used.
 
 Also features a one-click CSS validation button.
 
 The Custom CSS rules are usually output the last thing output before </head>, making it easy to override default CSS rules from themes and plugins.
 
+Note: requires PHP v5.4 or newer.
+
 == Installation ==
 
 1. Activate the plugin.
 1. Go to Appearance, Custom CSS and write some CSS rules!
+1. Save your CSS rules using the one of the convenient keyboard shortcuts Mac: Cmd+Enter or Cmd+Shift+S, or PC: Ctrl+Enter or Ctrl+Shift+S
+1. Validate your CSS rules using the one-click CSS validator button.
 
 == Changelog ==
+
+= 1.5.2 =
+* Improved visual feedback when saving Custom CSS rules. The editor's background colour now turns grey while saving.
+
+= 1.5.1 =
+* Save the CSS rules using the Cmd+Shift+S (or Ctrl+Shift+S) keyboard shortcut. The Cmd+Enter (or Ctrl+Enter) shortcut still works too.
+* CSS Editor: update before saving via a keyboard shortcut.
+
+= 1.5 =
+* Add support for SCSS/SASS.
+* Save rules via AJAX, which speeds up development.
+* Save the CSS rules using the Cmd+Enter (or Ctrl+Enter) keyboard shortcut.
+* Add translation support.
+* Note: requires PHP v5.4 or newer.
+
 = 1.4 =
 * If using the Beaver Builder WordPress theme, ensure OM4 CSS rules load after the theme's Custom CSS rules.
 
