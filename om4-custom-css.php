@@ -3,7 +3,7 @@
 Plugin Name: OM4 Custom CSS
 Plugin URI: https://github.com/OM4/om4-custom-css
 Description: Add custom CSS rules using the WordPress Dashboard. Access via Dashboard, Appearance, Custom CSS.
-Version: 1.5.2
+Version: 1.6
 Author: OM4
 Author URI: https://om4.com.au/plugins/
 Text Domain: om4-custom-css
@@ -14,7 +14,7 @@ License: GPLv2
 
 /*
 
-   Copyright 2012-2016 OM4 (email: plugins@om4.com.au    web: https://om4.com.au/plugins/)
+   Copyright 2012-2018 OM4 (email: plugins@om4.com.au    web: https://om4.com.au/plugins/)
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -51,7 +51,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 	 *
 	 * @var string
 	 */
-	protected $codemirror_version = '5.21.0';
+	protected $codemirror_version = '5.42.0';
 
 
 	/**
