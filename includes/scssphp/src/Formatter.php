@@ -1,19 +1,18 @@
 <?php
+
 /**
  * SCSSPHP
  *
- * @copyright 2012-2018 Leaf Corcoran
+ * @copyright 2012-2020 Leaf Corcoran
  *
  * @license http://opensource.org/licenses/MIT MIT
  *
- * @link http://leafo.github.io/scssphp
+ * @link http://scssphp.github.io/scssphp
  */
+namespace OM4\Vendor\ScssPhp\ScssPhp;
 
-namespace Leafo\ScssPhp;
-
-use Leafo\ScssPhp\Formatter\OutputBlock;
-use Leafo\ScssPhp\SourceMap\SourceMapGenerator;
-
+use OM4\Vendor\ScssPhp\ScssPhp\Formatter\OutputBlock;
+use OM4\Vendor\ScssPhp\ScssPhp\SourceMap\SourceMapGenerator;
 /**
  * Base formatter
  *
@@ -25,69 +24,60 @@ abstract class Formatter
      * @var integer
      */
     public $indentLevel;
-
     /**
      * @var string
      */
     public $indentChar;
-
     /**
      * @var string
      */
     public $break;
-
     /**
      * @var string
      */
     public $open;
-
     /**
      * @var string
      */
     public $close;
-
     /**
      * @var string
      */
     public $tagSeparator;
-
     /**
      * @var string
      */
     public $assignSeparator;
-
     /**
      * @var boolean
      */
     public $keepSemicolons;
-
     /**
-     * @var \Leafo\ScssPhp\Formatter\OutputBlock
+     * @var \OM4\Vendor\ScssPhp\ScssPhp\Formatter\OutputBlock
      */
     protected $currentBlock;
-
     /**
      * @var integer
      */
     protected $currentLine;
-
     /**
      * @var integer
      */
     protected $currentColumn;
-
     /**
-     * @var \Leafo\ScssPhp\SourceMap\SourceMapGenerator
+     * @var \OM4\Vendor\ScssPhp\ScssPhp\SourceMap\SourceMapGenerator
      */
     protected $sourceMapGenerator;
-
+    /**
+     * @var string
+     */
+    protected $strippedSemicolon;
     /**
      * Initialize formatter
      *
      * @api
      */
-    abstract public function __construct();
-
+    public abstract function __construct();
     /**
      * Return indentation (whitespace)
      *
@@ -97,7 +87,6 @@ abstract class Formatter
     {
         return '';
     }
-
     /**
      * Return property assignment
      *
@@ -110,165 +99,173 @@ abstract class Formatter
      */
     public function property($name, $value)
     {
-        return rtrim($name) . $this->assignSeparator . $value . ';';
+        return \rtrim($name) . $this->assignSeparator . $value . ';';
     }
-
     /**
-     * Strip semi-colon appended by property(); it's a separator, not a terminator
+     * Return custom property assignment
+     * differs in that you have to keep spaces in the value as is
      *
      * @api
      *
-     * @param array $lines
+     * @param string $name
+     * @param mixed  $value
+     *
+     * @return string
      */
-    public function stripSemicolon(&$lines)
+    public function customProperty($name, $value)
     {
-        if ($this->keepSemicolons) {
-            return;
-        }
-
-        if (($count = count($lines))
-            && substr($lines[$count - 1], -1) === ';'
-        ) {
-            $lines[$count - 1] = substr($lines[$count - 1], 0, -1);
-        }
+        return \rtrim($name) . \trim($this->assignSeparator) . $value . ';';
     }
-
     /**
      * Output lines inside a block
      *
-     * @param \Leafo\ScssPhp\Formatter\OutputBlock $block
+     * @param \OM4\Vendor\ScssPhp\ScssPhp\Formatter\OutputBlock $block
      */
-    protected function blockLines(OutputBlock $block)
+    protected function blockLines(\OM4\Vendor\ScssPhp\ScssPhp\Formatter\OutputBlock $block)
     {
         $inner = $this->indentStr();
-
         $glue = $this->break . $inner;
-
-        $this->write($inner . implode($glue, $block->lines));
-
-        if (! empty($block->children)) {
+        $this->write($inner . \implode($glue, $block->lines));
+        if (!empty($block->children)) {
             $this->write($this->break);
         }
     }
-
     /**
      * Output block selectors
      *
-     * @param \Leafo\ScssPhp\Formatter\OutputBlock $block
+     * @param \OM4\Vendor\ScssPhp\ScssPhp\Formatter\OutputBlock $block
      */
-    protected function blockSelectors(OutputBlock $block)
+    protected function blockSelectors(\OM4\Vendor\ScssPhp\ScssPhp\Formatter\OutputBlock $block)
     {
         $inner = $this->indentStr();
-
-        $this->write($inner
-            . implode($this->tagSeparator, $block->selectors)
-            . $this->open . $this->break);
+        $this->write($inner . \implode($this->tagSeparator, $block->selectors) . $this->open . $this->break);
     }
-
     /**
      * Output block children
      *
-     * @param \Leafo\ScssPhp\Formatter\OutputBlock $block
+     * @param \OM4\Vendor\ScssPhp\ScssPhp\Formatter\OutputBlock $block
      */
-    protected function blockChildren(OutputBlock $block)
+    protected function blockChildren(\OM4\Vendor\ScssPhp\ScssPhp\Formatter\OutputBlock $block)
     {
         foreach ($block->children as $child) {
             $this->block($child);
         }
     }
-
     /**
      * Output non-empty block
      *
-     * @param \Leafo\ScssPhp\Formatter\OutputBlock $block
+     * @param \OM4\Vendor\ScssPhp\ScssPhp\Formatter\OutputBlock $block
      */
-    protected function block(OutputBlock $block)
+    protected function block(\OM4\Vendor\ScssPhp\ScssPhp\Formatter\OutputBlock $block)
     {
         if (empty($block->lines) && empty($block->children)) {
             return;
         }
-
         $this->currentBlock = $block;
-
         $pre = $this->indentStr();
-
-        if (! empty($block->selectors)) {
+        if (!empty($block->selectors)) {
             $this->blockSelectors($block);
-
             $this->indentLevel++;
         }
-
-        if (! empty($block->lines)) {
+        if (!empty($block->lines)) {
             $this->blockLines($block);
         }
-
-        if (! empty($block->children)) {
+        if (!empty($block->children)) {
             $this->blockChildren($block);
         }
-
-        if (! empty($block->selectors)) {
+        if (!empty($block->selectors)) {
             $this->indentLevel--;
-
+            if (!$this->keepSemicolons) {
+                $this->strippedSemicolon = '';
+            }
             if (empty($block->children)) {
                 $this->write($this->break);
             }
-
             $this->write($pre . $this->close . $this->break);
         }
     }
-
+    /**
+     * Test and clean safely empty children
+     *
+     * @param \OM4\Vendor\ScssPhp\ScssPhp\Formatter\OutputBlock $block
+     *
+     * @return boolean
+     */
+    protected function testEmptyChildren($block)
+    {
+        $isEmpty = empty($block->lines);
+        if ($block->children) {
+            foreach ($block->children as $k => &$child) {
+                if (!$this->testEmptyChildren($child)) {
+                    $isEmpty = \false;
+                    continue;
+                }
+                if ($child->type === \OM4\Vendor\ScssPhp\ScssPhp\Type::T_MEDIA || $child->type === \OM4\Vendor\ScssPhp\ScssPhp\Type::T_DIRECTIVE) {
+                    $child->children = [];
+                    $child->selectors = null;
+                }
+            }
+        }
+        return $isEmpty;
+    }
     /**
      * Entry point to formatting a block
      *
      * @api
      *
-     * @param \Leafo\ScssPhp\Formatter\OutputBlock             $block              An abstract syntax tree
-     * @param \Leafo\ScssPhp\SourceMap\SourceMapGenerator|null $sourceMapGenerator Optional source map generator
+     * @param \OM4\Vendor\ScssPhp\ScssPhp\Formatter\OutputBlock             $block              An abstract syntax tree
+     * @param \OM4\Vendor\ScssPhp\ScssPhp\SourceMap\SourceMapGenerator|null $sourceMapGenerator Optional source map generator
      *
      * @return string
      */
-    public function format(OutputBlock $block, SourceMapGenerator $sourceMapGenerator = null)
+    public function format(\OM4\Vendor\ScssPhp\ScssPhp\Formatter\OutputBlock $block, \OM4\Vendor\ScssPhp\ScssPhp\SourceMap\SourceMapGenerator $sourceMapGenerator = null)
     {
         $this->sourceMapGenerator = null;
-
         if ($sourceMapGenerator) {
             $this->currentLine = 1;
             $this->currentColumn = 0;
             $this->sourceMapGenerator = $sourceMapGenerator;
         }
-
-        ob_start();
-
+        $this->testEmptyChildren($block);
+        \ob_start();
         $this->block($block);
-
-        $out = ob_get_clean();
-
+        $out = \ob_get_clean();
         return $out;
     }
-
     /**
+     * Output content
+     *
      * @param string $str
      */
     protected function write($str)
     {
+        if (!empty($this->strippedSemicolon)) {
+            echo $this->strippedSemicolon;
+            $this->strippedSemicolon = '';
+        }
+        /*
+         * Maybe Strip semi-colon appended by property(); it's a separator, not a terminator
+         * will be striped for real before a closing, otherwise displayed unchanged starting the next write
+         */
+        if (!$this->keepSemicolons && $str && \strpos($str, ';') !== \false && \substr($str, -1) === ';') {
+            $str = \substr($str, 0, -1);
+            $this->strippedSemicolon = ';';
+        }
         if ($this->sourceMapGenerator) {
             $this->sourceMapGenerator->addMapping(
                 $this->currentLine,
                 $this->currentColumn,
                 $this->currentBlock->sourceLine,
-                $this->currentBlock->sourceColumn - 1, //columns from parser are off by one
+                //columns from parser are off by one
+                $this->currentBlock->sourceColumn > 0 ? $this->currentBlock->sourceColumn - 1 : 0,
                 $this->currentBlock->sourceName
             );
-
-            $lines = explode("\n", $str);
-            $lineCount = count($lines);
-            $this->currentLine += $lineCount-1;
-
-            $lastLine = array_pop($lines);
-
-            $this->currentColumn = ($lineCount === 1 ? $this->currentColumn : 0) + strlen($lastLine);
+            $lines = \explode("\n", $str);
+            $lineCount = \count($lines);
+            $this->currentLine += $lineCount - 1;
+            $lastLine = \array_pop($lines);
+            $this->currentColumn = ($lineCount === 1 ? $this->currentColumn : 0) + \strlen($lastLine);
         }
-
         echo $str;
     }
 }

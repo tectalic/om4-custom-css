@@ -170,7 +170,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 	private function get_custom_css_file_url() {
 		return $this->upload_url( $this->get_custom_css_filename() );
 	}
-	
+
 	/**
 	 * Retrieves the list of old CSS files from the database.
 	 *
@@ -472,8 +472,8 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 
 		require( 'includes/scssphp/scss.inc.php' );
 
-		$css_compiler = new Leafo\ScssPhp\Compiler();
-		$css_compiler->setFormatter( 'Leafo\ScssPhp\Formatter\Compressed' ) ; // Compressed/minified output.
+		$css_compiler = new OM4\Vendor\ScssPhp\ScssPhp\Compiler();
+		$css_compiler->setFormatter( OM4\Vendor\ScssPhp\ScssPhp\Formatter\Compressed::class ) ; // Compressed/minified output.
 		$css = $css_compiler->compile( $this->get_custom_css() );
 		$css = "/* CSS Generated " . date( 'r' ) . ' by User ID ' . get_current_user_id() . " */\n" . $css;
 
