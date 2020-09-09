@@ -169,7 +169,11 @@ END_OF_SCSS
     {
         return [
             ['span { content: "😎";}', '"span{content:\"\ud83d\ude0e\"}"'],
-            ['span { content: "\f0da ";}', '"span{content:\"\uf0da "}"'],
+            ['span { content: "\1F600";}', '"span{content:\"\ud83d\ude00\"}"'],
+            ['span { content: "\0021";}', '"span{content:\"!\"}"'],
+            ['span { content: "\01b1";}', '"span{content:\"\u01b1\"}"'],
+            ['span { content: "\f0da ";}', '"span{content:\"\uf0da \"}"'],
+            ['span { content: " ";}', '"span{content:\"\uf0da \"}"'],
         ];
     }
 
