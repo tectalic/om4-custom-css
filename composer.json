@@ -3,7 +3,7 @@
         "php-stubs/woocommerce-stubs": "^4.4.1",
         "phpstan/phpstan-deprecation-rules": "^0.12.5",
         "phpstan/phpstan": "^0.12.42",
-        "phpunit/phpunit": "^9.3",
+        "phpunit/phpunit": "^8.5",
         "scssphp/scssphp": "=1.2.1",
         "szepeviktor/phpstan-wordpress": "^0.6.2"
     },
