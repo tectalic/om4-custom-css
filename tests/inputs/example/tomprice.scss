@@ -1,0 +1,99 @@
+/** COLOURS **/
+$primary_colour: #000000;
+$border_colour: #333333;
+
+
+/* Example usage of the colour variables above */
+.fl-post-content p { color: $primary_colour; }
+.fl-post-content .gform_wrapper input.gform_button { background-color: $primary_colour; }
+.fl-post-content .gform_wrapper input, .fl-post-content .gform_wrapper textarea { border: 1px solid $border_colour; }
+
+
+/** Typography **/
+/* Body text link styles */
+.fl-rich-text h1 a, .fl-rich-text h2 a, .fl-rich-text h3 a, .fl-rich-text h4 a, .fl-rich-text h5 a , .fl-rich-text h6 a {text-decoration: none;}
+
+/** NAVIGATION (768px Breakpoint) **/
+
+.fl-node-5dfc3da297b4a .fl-menu .fl-toggle-plus .fl-menu-toggle:before, .fl-node-5dfc3da297b4a .fl-menu .fl-toggle-plus .fl-menu-toggle:after {border-color: #dbd6ea}
+
+.home-call2action .fl-cta-stacked .fl-cta-button {padding-top: 0;}
+
+/** SEARCH RESULTS **/
+body.search-results .post-meta, body.search-result .fl-post-meta { display: none; }
+
+/** FORMS **/
+/* Gravity Forms Fix - ensure input field heights are large enough in Safari when typing in text */
+input[type=text], input[type=password], input[type=email], input[type=tel], input[type=date], input[type=month], input[type=week], input[type=time], input[type=number], input[type=search], input[type=url] { height: auto; }
+
+/* Header Styling */
+#menu-no-mega-primary.home-page .menu-item > .sub-menu { width: 110%; float: none; padding: 20px; border-radius: 10px 10px 10px 10px; box-shadow: none; left: -20px; }
+
+#menu-no-mega-primary.home-page .menu-item > .sub-menu { bottom: 30px; top: initial; left: -20px; right: 0px; }
+.fl-theme-builder-header-scrolled .text-logo { opacity: 100; transition: 1s ease; transition-delay: 0.4s; }
+.text-logo { opacity: 0; transition: 0.5s ease; }
+.filter-invert img { filter: invert(100); }
+
+@media only screen and (max-width: 767px) {
+	#menu-primary.menu.fl-menu-horizontal { display: block;width: 100%;float: none;margin-left: 0px;margin-right: 0px;position: 	absolute; margin-right: auto; margin-left: auto; float: none;  }
+	#menu-primary.menu.fl-menu-horizontal .menu-item { width: 250px; }
+}
+
+@media only screen and (max-width: 767px) {
+  #logo-row-heading {
+    max-width: 300px
+  }
+}
+/* Hover */
+@media only screen and (max-width: 767px) {
+  .fl-page .menu .menu-item a:before { margin-top: 2px; }
+}
+.fl-page .menu .menu-item a:before { content: ""; position: absolute; width: 80%; height: 2px; bottom: 7px; left: 10%; background-color: #fff; visibility: hidden; -webkit-transform: scaleX(0); transform: scaleX(0); -webkit-transition: all 0.3s ease-in out 0s; transition: all 0.3s ease-in-out 0s; margin-top: 3px; }
+.fl-page .menu a:hover:before { visibility: visible; -webkit-transform: scaleX(1); transform: scaleX(1); bottom: 7px; }
+
+// Full height page builder rows: on screens larger than 1000px tall (eg Googlebot), ensure the row is only 1000px tall at most
+// Remove this if not using any full height rows
+@media only screen and (min-height: 1000px) {
+  .fl-row-full-height .fl-row-content-wrap { max-height: 1000px; min-height: 1000px; }
+}
+
+//* Term Dates *//
+.tablesaw-cell-label {color: #FFF; font-family: Poppins, sans-serif; font-weight: 300; }
+@media (max-width: 39.9375em){
+  .tablesaw-cell-content {max-width: 100%;}
+}
+
+
+/* Footer */
+@media only screen and (min-width: 1134px) {
+.parallelogram {transform: skew(25deg);}
+.footer-no-angle {transform: skew(-25deg);}
+}
+.footer-icon a { text-align: center; }
+.footer-icon i { font-size: 25px; display: block; }
+.footer-icon span { display: block; /*padding-left: 0.25em; */ font-size: 15px; font-family: "Roboto Condensed", sans-serif; text-transform: uppercase; vertical-align: top; font-weight: 400; white-space: nowrap; }
+.footer-icon a:hover { text-decoration: none; }
+#footer-row p { margin: 0; }
+
+// Prevent single columns from being constrained to a 400px max-width
+@media only screen and (max-width: 767px) {
+	.fl-col-small {max-width: none;}
+
+}
+
+
+
+/* Event Calendar */
+.tribe-common--breakpoint-medium.tribe-common .tribe-common-h3 {padding: 0 0 0 20px;}
+.tribe-common .tribe-common-c-btn-icon {    padding: 10px;}
+.tribe-common .tribe-common-c-btn, .tribe-common a.tribe-common-c-btn {background-color: #2a2b69; border-radius: 25px;}
+
+/* Phone/Search/Facebook icons in header on medium devices: display them horizontally inline rather than down vertically */
+.fl-col.inline-modules > .fl-col-content { flex-direction: row; }
+.fl-col.inline-modules > .fl-col-content > .fl-module { /* display: inline-block !important; */ width: auto; }
+.fl-col.col-align-right > .fl-col-content { justify-content: center; -webkit-align-items: right; -webkit-box-align: right; -webkit-box-pack: right; -webkit-justify-content: right; -ms-flex-align: right; -ms-flex-pack: right; }
+
+
+/* WCAG / Accessbility */
+// Hide icon text for icon modules with the "hidden-icon-text" class. Eg the phone icon on medium devices.
+.hidden-icon-text .fl-icon-text { display: none; }

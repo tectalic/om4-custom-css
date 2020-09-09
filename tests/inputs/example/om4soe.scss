@@ -1,0 +1,70 @@
+/** COLOURS **/
+$primary_colour: #000000;
+$border_colour: #333333;
+
+
+/* Example usage of the colour variables above */
+.fl-post-content p { color: $primary_colour; }
+.fl-post-content .gform_wrapper input.gform_button { background-color: $primary_colour; }
+.fl-post-content .gform_wrapper input, .fl-post-content .gform_wrapper textarea { border: 1px solid $border_colour; }
+
+
+/** Typography **/
+/* Body text link styles */
+.fl-rich-text h1 a, .fl-rich-text h2 a, .fl-rich-text h3 a, .fl-rich-text h4 a, .fl-rich-text h5 a , .fl-rich-text h6 a {text-decoration: none;}
+body a {text-decoration: underline; color: $border_colour;}
+
+
+/** NAVIGATION (769px Breakpoint) **/
+@media only screen and (min-width: 769px) {
+
+}
+
+/** SEARCH RESULTS **/
+body.search-results .post-meta, body.search-result .fl-post-meta { display: none; }
+
+
+/** FORMS **/
+/* Gravity Forms Fix - ensure input field heights are large enough in Safari when typing in text */
+input[type=text], input[type=password], input[type=email], input[type=tel], input[type=date], input[type=month], input[type=week], input[type=time], input[type=number], input[type=search], input[type=url] { height: auto; }
+
+
+/** MOBILE AND RESPONSIVENESS **/
+
+@media only screen and (max-width: 768px) { /* Breakpoint */
+  #menu-primary ul { padding-left: 15px; } // Hamburger sub-menu indent
+}
+
+/** Hamburger Menu Styling **/
+@media only screen and (max-width: 992px) {
+
+}
+
+
+// Full height page builder rows: on screens larger than 1000px tall (eg Googlebot), ensure the row is only 1000px tall at most
+// Remove this if not using any full height rows
+@media only screen and (min-height: 1000px) {
+  .fl-row-full-height .fl-row-content-wrap {
+    max-height: 1000px;
+  	min-height: 1000px;
+  }
+}
+
+
+// Uncomment the following to prevent single columns from being constrained to a 400px max-width:
+/*
+@media only screen and (max-width: 768px) {
+	.fl-col-small {max-width: none;}
+}
+*/
+
+/* Articles Styling */
+/* Single Blog Posts (only if using posts or custom post types that need to be full width) */
+body.single .article .container, .single-article .row .fl-content, .single-article #fl-main-content .container { width: 100%; max-width: none; }
+.article .fl-post-header { display: none; }
+.single-article .row .fl-content { margin-top: 0px !important;}
+
+
+/* Single Blog Posts (only if using posts or custom post types that need to be full width) */
+body.single .container { width: 100%; max-width: none; } // Allow full width
+body.single .fl-post-header { display: none; } // Hide default h1
