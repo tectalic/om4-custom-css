@@ -1,8 +1,8 @@
 === OM4 Custom CSS ===
 Tags: custom css, css, css editor
 Requires at least: 4.6
-Tested up to: 5.0
-Stable tag: 1.6
+Tested up to: 5.5
+Stable tag: 1.7
 Contributors: jamescollins
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -29,6 +29,11 @@ Note: requires PHP v5.4 or newer.
 1. Validate your CSS rules using the one-click CSS validator button.
 
 == Changelog ==
+
+= 1.7 =
+* Add support for PHP 7.4.
+* Update CodeMirror library and SCSSPHP libraries to their latest versions.
+* Add tests.
 
 = 1.6 =
 * Add support for PHP 7.2.
