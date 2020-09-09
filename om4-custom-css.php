@@ -51,7 +51,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 	 *
 	 * @var string
 	 */
-	protected $codemirror_version = '5.42.0';
+	protected $codemirror_version = '5.57.0';
 
 
 	/**
