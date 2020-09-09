@@ -1,0 +1,18 @@
+{
+    "require-dev": {
+        "php-stubs/woocommerce-stubs": "^4.4.1",
+        "phpstan/phpstan-deprecation-rules": "^0.12.5",
+        "phpstan/phpstan": "^0.12.42",
+        "phpunit/phpunit": "^9.3",
+        "scssphp/scssphp": "=1.2.1",
+        "szepeviktor/phpstan-wordpress": "^0.6.2"
+    },
+    "suggest": {
+        "humbug/php-scoper": "for generating prefixed vendor packages"
+    },
+    "scripts": {
+        "test:stan": "vendor/bin/phpstan analyse includes om4-custom-css.php",
+        "test:unit": "vendor/bin/phpunit",
+        "scope": "php-scoper add-prefix --config=scoper.php --output-dir=./includes/scssphp --force --quiet"
+    }
+}
