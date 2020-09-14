@@ -31,6 +31,7 @@ Note: requires PHP v5.4 or newer.
 == Changelog ==
 
 = 1.7 =
+* Change CSS editor to Darcula theme.
 * Add support for PHP 7.4.
 * Update CodeMirror library and SCSSPHP libraries to their latest versions.
 * Add tests.
