@@ -1,0 +1,10 @@
+includes:
+  - vendor/szepeviktor/phpstan-wordpress/extension.neon
+parameters:
+  bootstrapFiles:
+    - includes/scssphp/scss.inc.php
+  excludes_analyse:
+    - includes/scssphp/*
+  fileExtensions:
+    - php
+  level: 5

@@ -3,9 +3,9 @@
 Plugin Name: OM4 Custom CSS
 Plugin URI: https://github.com/OM4/om4-custom-css
 Description: Add custom CSS rules using the WordPress Dashboard. Access via Dashboard, Appearance, Custom CSS.
-Version: 1.6
+Version: 1.7
 Author: OM4
-Author URI: https://om4.com.au/plugins/
+Author URI: https://om4.io/plugins/
 Text Domain: om4-custom-css
 Git URI: https://github.com/OM4/om4-custom-css
 Git Branch: release
@@ -14,7 +14,7 @@ License: GPLv2
 
 /*
 
-   Copyright 2012-2018 OM4 (email: plugins@om4.com.au    web: https://om4.com.au/plugins/)
+   Copyright 2012-2020 OM4 (email: plugins@om4.io    web: https://om4.io/plugins/)
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -51,7 +51,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 	 *
 	 * @var string
 	 */
-	protected $codemirror_version = '5.42.0';
+	protected $codemirror_version = '5.57.0';
 
 
 	/**
@@ -170,7 +170,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 	private function get_custom_css_file_url() {
 		return $this->upload_url( $this->get_custom_css_filename() );
 	}
-	
+
 	/**
 	 * Retrieves the list of old CSS files from the database.
 	 *
@@ -275,6 +275,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 		// CSS Editor JS/CSS.
 		wp_enqueue_script( 'om4_custom_css_codemirror', $this->plugin_url() . '/CodeMirror/lib/codemirror.js', array( 'jquery' ), $this->codemirror_version );
 		wp_enqueue_script( 'om4_custom_css_codemirror_css_mode', $this->plugin_url() . '/CodeMirror/mode/css/css.js', array( 'om4_custom_css_codemirror' ), $this->codemirror_version );
+		wp_enqueue_style( 'om4_custom_css_codemirror_theme', $this->plugin_url() . '/CodeMirror/theme/darcula.css', array(), $this->codemirror_version );
 		wp_enqueue_style( 'om4_custom_css_codemirror', $this->plugin_url() . '/CodeMirror/lib/codemirror.css', array(), $this->codemirror_version );
 
 		add_action( 'admin_print_footer_scripts', array( $this, 'admin_print_footer_scripts' ) );
@@ -306,7 +307,8 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 				mode: "text/x-scss", // SCSS mode as per http://codemirror.net/mode/css/scss.html
 				autofocus: true, // Autofocus the cursor into the editor on page load
 				viewportMargin: Infinity, // Expand the editor to the height of the code
-				lineWrapping: true // Line Wrapping
+				lineWrapping: true, // Line Wrapping
+				theme: "darcula" // Theme Name
 			});
 
 			// Save the CSS rules using keyboard shortcuts as per https://codemirror.net/doc/manual.html#keymaps
@@ -339,7 +341,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 					event.preventDefault();
 					// When saving update the Save buttons, add a spinning wheel, and set the editor background colour to grey
 					$(this).find('input[type="submit"]').prop('disabled', true).prop( 'value', om4_custom_css.saving )
-					$('#wp-css-editor-container > .CodeMirror').css('background-color', '#dfdfdf');
+					$('#wp-css-editor-container > .CodeMirror').css('opacity', 0.7).css('transition','all 0.2s');
 					$(this).find('img.loadingspinner').show();
 					var data = $(this).serialize();
 					jQuery.ajax({
@@ -360,7 +362,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 						complete: function () {
 							$('#om4-header form input[type="submit"]').prop('disabled', false).prop( 'value', om4_custom_css.default );
 							$('#om4-header form img.loadingspinner').hide();
-							$('#wp-css-editor-container > .CodeMirror').css('background-color', '');
+							$('#wp-css-editor-container > .CodeMirror').css('opacity', 1);
 						}
 					});
 
@@ -472,8 +474,8 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 
 		require( 'includes/scssphp/scss.inc.php' );
 
-		$css_compiler = new Leafo\ScssPhp\Compiler();
-		$css_compiler->setFormatter( 'Leafo\ScssPhp\Formatter\Compressed' ) ; // Compressed/minified output.
+		$css_compiler = new OM4\Vendor\ScssPhp\ScssPhp\Compiler();
+		$css_compiler->setFormatter( OM4\Vendor\ScssPhp\ScssPhp\Formatter\Compressed::class ) ; // Compressed/minified output.
 		$css = $css_compiler->compile( $this->get_custom_css() );
 		$css = "/* CSS Generated " . date( 'r' ) . ' by User ID ' . get_current_user_id() . " */\n" . $css;
 

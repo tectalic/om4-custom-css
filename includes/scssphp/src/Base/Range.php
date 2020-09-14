@@ -1,15 +1,15 @@
 <?php
+
 /**
  * SCSSPHP
  *
- * @copyright 2015-2018 Leaf Corcoran
+ * @copyright 2015-2020 Leaf Corcoran
  *
  * @license http://opensource.org/licenses/MIT MIT
  *
- * @link http://leafo.github.io/scssphp
+ * @link http://scssphp.github.io/scssphp
  */
-
-namespace Leafo\ScssPhp\Base;
+namespace OM4\Vendor\ScssPhp\ScssPhp\Base;
 
 /**
  * Range
@@ -20,7 +20,6 @@ class Range
 {
     public $first;
     public $last;
-
     /**
      * Initialize range
      *
@@ -32,7 +31,6 @@ class Range
         $this->first = $first;
         $this->last = $last;
     }
-
     /**
      * Test for inclusion in range
      *
