@@ -275,6 +275,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 		// CSS Editor JS/CSS.
 		wp_enqueue_script( 'om4_custom_css_codemirror', $this->plugin_url() . '/CodeMirror/lib/codemirror.js', array( 'jquery' ), $this->codemirror_version );
 		wp_enqueue_script( 'om4_custom_css_codemirror_css_mode', $this->plugin_url() . '/CodeMirror/mode/css/css.js', array( 'om4_custom_css_codemirror' ), $this->codemirror_version );
+		wp_enqueue_style( 'om4_custom_css_codemirror_theme', $this->plugin_url() . '/CodeMirror/theme/darcula.css', array(), $this->codemirror_version );
 		wp_enqueue_style( 'om4_custom_css_codemirror', $this->plugin_url() . '/CodeMirror/lib/codemirror.css', array(), $this->codemirror_version );
 
 		add_action( 'admin_print_footer_scripts', array( $this, 'admin_print_footer_scripts' ) );
@@ -306,7 +307,8 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 				mode: "text/x-scss", // SCSS mode as per http://codemirror.net/mode/css/scss.html
 				autofocus: true, // Autofocus the cursor into the editor on page load
 				viewportMargin: Infinity, // Expand the editor to the height of the code
-				lineWrapping: true // Line Wrapping
+				lineWrapping: true, // Line Wrapping
+				theme: "darcula" // Theme Name
 			});
 
 			// Save the CSS rules using keyboard shortcuts as per https://codemirror.net/doc/manual.html#keymaps
@@ -339,7 +341,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 					event.preventDefault();
 					// When saving update the Save buttons, add a spinning wheel, and set the editor background colour to grey
 					$(this).find('input[type="submit"]').prop('disabled', true).prop( 'value', om4_custom_css.saving )
-					$('#wp-css-editor-container > .CodeMirror').css('background-color', '#dfdfdf');
+					$('#wp-css-editor-container > .CodeMirror').css('opacity', 0.7).css('transition','all 0.2s');
 					$(this).find('img.loadingspinner').show();
 					var data = $(this).serialize();
 					jQuery.ajax({
@@ -360,7 +362,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 						complete: function () {
 							$('#om4-header form input[type="submit"]').prop('disabled', false).prop( 'value', om4_custom_css.default );
 							$('#om4-header form img.loadingspinner').hide();
-							$('#wp-css-editor-container > .CodeMirror').css('background-color', '');
+							$('#wp-css-editor-container > .CodeMirror').css('opacity', 1);
 						}
 					});
 
