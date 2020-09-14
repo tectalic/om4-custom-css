@@ -126,7 +126,7 @@ class Parser
      *
      * @param string $buffer
      *
-     * @return OM4\Vendor\ScssPhp\ScssPhp\Block
+     * @return \OM4\Vendor\ScssPhp\ScssPhp\Block
      */
     public function parse($buffer)
     {
