@@ -1,0 +1,22 @@
+{
+    "require-dev": {
+        "dealerdirect/phpcodesniffer-composer-installer": "^0.7.0",
+        "phpcompatibility/phpcompatibility-wp": "^2.1",
+        "phpmetrics/phpmetrics": "^2.7",
+        "phpstan/phpstan-deprecation-rules": "^0.12.5",
+        "phpstan/phpstan": "^0.12.42",
+        "phpunit/phpunit": "^8.5",
+        "scssphp/scssphp": "=1.2.1",
+        "szepeviktor/phpstan-wordpress": "^0.6.2"
+    },
+    "suggest": {
+        "humbug/php-scoper": "for generating prefixed vendor packages"
+    },
+    "scripts": {
+        "test:compat": "vendor/bin/phpcs -p -s --extensions=php --ignore=vendor/*, --standard=PHPCompatibilityWP --runtime-set testVersion 7.2- .",
+        "test:stan": "vendor/bin/phpstan analyse includes om4-custom-css.php",
+        "test:unit": "vendor/bin/phpunit",
+        "release:zip": "git archive --format zip --output om4-custom-css.zip --prefix=om4-custom-css/",
+        "scope": "php-scoper add-prefix --config=scoper.php --output-dir=./includes/scssphp --force --quiet"
+    }
+}

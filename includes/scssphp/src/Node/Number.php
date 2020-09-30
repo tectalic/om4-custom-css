@@ -1,20 +1,19 @@
 <?php
+
 /**
  * SCSSPHP
  *
- * @copyright 2012-2018 Leaf Corcoran
+ * @copyright 2012-2020 Leaf Corcoran
  *
  * @license http://opensource.org/licenses/MIT MIT
  *
- * @link http://leafo.github.io/scssphp
+ * @link http://scssphp.github.io/scssphp
  */
+namespace OM4\Vendor\ScssPhp\ScssPhp\Node;
 
-namespace Leafo\ScssPhp\Node;
-
-use Leafo\ScssPhp\Compiler;
-use Leafo\ScssPhp\Node;
-use Leafo\ScssPhp\Type;
-
+use OM4\Vendor\ScssPhp\ScssPhp\Compiler;
+use OM4\Vendor\ScssPhp\ScssPhp\Node;
+use OM4\Vendor\ScssPhp\ScssPhp\Type;
 /**
  * Dimension + optional units
  *
@@ -26,59 +25,34 @@ use Leafo\ScssPhp\Type;
  *
  * @author Anthon Pang <anthon.pang@gmail.com>
  */
-class Number extends Node implements \ArrayAccess
+class Number extends \OM4\Vendor\ScssPhp\ScssPhp\Node implements \ArrayAccess
 {
+    const PRECISION = 10;
     /**
      * @var integer
+     * @deprecated use {Number::PRECISION} instead to read the precision. Configuring it is not supported anymore.
      */
-    static public $precision = 10;
-
+    public static $precision = self::PRECISION;
     /**
      * @see http://www.w3.org/TR/2012/WD-css3-values-20120308/
      *
      * @var array
      */
-    static protected $unitTable = [
-        'in' => [
-            'in' => 1,
-            'pc' => 6,
-            'pt' => 72,
-            'px' => 96,
-            'cm' => 2.54,
-            'mm' => 25.4,
-            'q'  => 101.6,
-        ],
-        'turn' => [
-            'deg'  => 360,
-            'grad' => 400,
-            'rad'  => 6.28318530717958647692528676, // 2 * M_PI
-            'turn' => 1,
-        ],
-        's' => [
-            's'  => 1,
-            'ms' => 1000,
-        ],
-        'Hz' => [
-            'Hz'  => 1,
-            'kHz' => 0.001,
-        ],
-        'dpi' => [
-            'dpi'  => 1,
-            'dpcm' => 2.54,
-            'dppx' => 96,
-        ],
-    ];
-
+    protected static $unitTable = ['in' => ['in' => 1, 'pc' => 6, 'pt' => 72, 'px' => 96, 'cm' => 2.54, 'mm' => 25.4, 'q' => 101.6], 'turn' => [
+        'deg' => 360,
+        'grad' => 400,
+        'rad' => 6.283185307179586,
+        // 2 * M_PI
+        'turn' => 1,
+    ], 's' => ['s' => 1, 'ms' => 1000], 'Hz' => ['Hz' => 1, 'kHz' => 0.001], 'dpi' => ['dpi' => 1, 'dpcm' => 1 / 2.54, 'dppx' => 1 / 96]];
     /**
      * @var integer|float
      */
     public $dimension;
-
     /**
      * @var array
      */
     public $units;
-
     /**
      * Initialize number
      *
@@ -87,78 +61,66 @@ class Number extends Node implements \ArrayAccess
      */
     public function __construct($dimension, $initialUnit)
     {
-        $this->type      = Type::T_NUMBER;
+        $this->type = \OM4\Vendor\ScssPhp\ScssPhp\Type::T_NUMBER;
         $this->dimension = $dimension;
-        $this->units     = is_array($initialUnit)
-            ? $initialUnit
-            : ($initialUnit ? [$initialUnit => 1]
-                            : []);
+        $this->units = \is_array($initialUnit) ? $initialUnit : ($initialUnit ? [$initialUnit => 1] : []);
     }
-
     /**
      * Coerce number to target units
      *
      * @param array $units
      *
-     * @return \Leafo\ScssPhp\Node\Number
+     * @return \OM4\Vendor\ScssPhp\ScssPhp\Node\Number
      */
     public function coerce($units)
     {
         if ($this->unitless()) {
-            return new Number($this->dimension, $units);
+            return new \OM4\Vendor\ScssPhp\ScssPhp\Node\Number($this->dimension, $units);
         }
-
         $dimension = $this->dimension;
-
-        foreach (static::$unitTable['in'] as $unit => $conv) {
-            $from       = isset($this->units[$unit]) ? $this->units[$unit] : 0;
-            $to         = isset($units[$unit]) ? $units[$unit] : 0;
-            $factor     = pow($conv, $from - $to);
-            $dimension /= $factor;
+        if (\count($units)) {
+            $baseUnit = \array_keys($units);
+            $baseUnit = \reset($baseUnit);
+            $baseUnit = $this->findBaseUnit($baseUnit);
+            if ($baseUnit && isset(static::$unitTable[$baseUnit])) {
+                foreach (static::$unitTable[$baseUnit] as $unit => $conv) {
+                    $from = isset($this->units[$unit]) ? $this->units[$unit] : 0;
+                    $to = isset($units[$unit]) ? $units[$unit] : 0;
+                    $factor = \pow($conv, $from - $to);
+                    $dimension /= $factor;
+                }
+            }
         }
-
-        return new Number($dimension, $units);
+        return new \OM4\Vendor\ScssPhp\ScssPhp\Node\Number($dimension, $units);
     }
-
     /**
      * Normalize number
      *
-     * @return \Leafo\ScssPhp\Node\Number
+     * @return \OM4\Vendor\ScssPhp\ScssPhp\Node\Number
      */
     public function normalize()
     {
         $dimension = $this->dimension;
-        $units     = [];
-
-        $this->normalizeUnits($dimension, $units, 'in');
-
-        return new Number($dimension, $units);
+        $units = [];
+        $this->normalizeUnits($dimension, $units);
+        return new \OM4\Vendor\ScssPhp\ScssPhp\Node\Number($dimension, $units);
     }
-
     /**
      * {@inheritdoc}
      */
     public function offsetExists($offset)
     {
         if ($offset === -3) {
-            return $this->sourceColumn !== null;
+            return !\is_null($this->sourceColumn);
         }
-
         if ($offset === -2) {
-            return $this->sourceLine !== null;
+            return !\is_null($this->sourceLine);
         }
-
-        if ($offset === -1
-            || $offset === 0
-            || $offset === 1
-            || $offset === 2
-        ) {
-            return true;
+        if ($offset === -1 || $offset === 0 || $offset === 1 || $offset === 2) {
+            return \true;
         }
-
-        return false;
+        return \false;
     }
-
     /**
      * {@inheritdoc}
      */
@@ -167,24 +129,18 @@ class Number extends Node implements \ArrayAccess
         switch ($offset) {
             case -3:
                 return $this->sourceColumn;
-
             case -2:
                 return $this->sourceLine;
-
             case -1:
                 return $this->sourceIndex;
-
             case 0:
                 return $this->type;
-
             case 1:
                 return $this->dimension;
-
             case 2:
                 return $this->units;
         }
     }
-
     /**
      * {@inheritdoc}
      */
@@ -202,7 +158,6 @@ class Number extends Node implements \ArrayAccess
             $this->sourceColumn = $value;
         }
     }
-
     /**
      * {@inheritdoc}
      */
@@ -220,7 +175,6 @@ class Number extends Node implements \ArrayAccess
             $this->sourceColumn = null;
         }
     }
-
     /**
      * Returns true if the number is unitless
      *
@@ -228,9 +182,31 @@ class Number extends Node implements \ArrayAccess
      */
     public function unitless()
     {
-        return ! array_sum($this->units);
+        return !\array_sum($this->units);
     }
-
+    /**
+     * Test if a number can be normalized in a base unit
+     * ie if its units are homogeneous
+     *
+     * @return boolean
+     */
+    public function isNormalizable()
+    {
+        if ($this->unitless()) {
+            return \false;
+        }
+        $baseUnit = null;
+        foreach ($this->units as $unit => $exp) {
+            $b = $this->findBaseUnit($unit);
+            if (\is_null($baseUnit)) {
+                $baseUnit = $b;
+            }
+            if (\is_null($b) or $b !== $baseUnit) {
+                return \false;
+            }
+        }
+        return $baseUnit;
+    }
     /**
      * Returns unit(s) as the product of numerator units divided by the product of denominator units
      *
@@ -238,64 +214,53 @@ class Number extends Node implements \ArrayAccess
      */
     public function unitStr()
     {
-        $numerators   = [];
+        $numerators = [];
         $denominators = [];
-
         foreach ($this->units as $unit => $unitSize) {
             if ($unitSize > 0) {
-                $numerators = array_pad($numerators, count($numerators) + $unitSize, $unit);
+                $numerators = \array_pad($numerators, \count($numerators) + $unitSize, $unit);
                 continue;
             }
-
             if ($unitSize < 0) {
-                $denominators = array_pad($denominators, count($denominators) + $unitSize, $unit);
+                $denominators = \array_pad($denominators, \count($denominators) - $unitSize, $unit);
                 continue;
             }
         }
-
-        return implode('*', $numerators) . (count($denominators) ? '/' . implode('*', $denominators) : '');
+        return \implode('*', $numerators) . (\count($denominators) ? '/' . \implode('*', $denominators) : '');
     }
-
     /**
      * Output number
      *
-     * @param \Leafo\ScssPhp\Compiler $compiler
+     * @param \OM4\Vendor\ScssPhp\ScssPhp\Compiler $compiler
      *
      * @return string
      */
-    public function output(Compiler $compiler = null)
+    public function output(\OM4\Vendor\ScssPhp\ScssPhp\Compiler $compiler = null)
     {
-        $dimension = round($this->dimension, static::$precision);
-
-        $units = array_filter($this->units, function ($unitSize) {
+        $dimension = \round($this->dimension, self::PRECISION);
+        $units = \array_filter($this->units, function ($unitSize) {
             return $unitSize;
         });
-
-        if (count($units) > 1 && array_sum($units) === 0) {
+        if (\count($units) > 1 && \array_sum($units) === 0) {
             $dimension = $this->dimension;
-            $units     = [];
-
-            $this->normalizeUnits($dimension, $units, 'in');
-
-            $dimension = round($dimension, static::$precision);
-            $units     = array_filter($units, function ($unitSize) {
+            $units = [];
+            $this->normalizeUnits($dimension, $units);
+            $dimension = \round($dimension, self::PRECISION);
+            $units = \array_filter($units, function ($unitSize) {
                 return $unitSize;
             });
         }
-
-        $unitSize = array_sum($units);
-
-        if ($compiler && ($unitSize > 1 || $unitSize < 0 || count($units) > 1)) {
-            $compiler->throwError((string) $dimension . $this->unitStr() . " isn't a valid CSS value.");
+        $unitSize = \array_sum($units);
+        if ($compiler && ($unitSize > 1 || $unitSize < 0 || \count($units) > 1)) {
+            $this->units = $units;
+            $unit = $this->unitStr();
+        } else {
+            \reset($units);
+            $unit = \key($units);
         }
-
-        reset($units);
-        $unit = key($units);
-        $dimension = number_format($dimension, static::$precision, '.', '');
-
-        return (static::$precision ? rtrim(rtrim($dimension, '0'), '.') : $dimension) . $unit;
+        $dimension = \number_format($dimension, self::PRECISION, '.', '');
+        return (self::PRECISION ? \rtrim(\rtrim($dimension, '0'), '.') : $dimension) . $unit;
     }
-
     /**
      * {@inheritdoc}
      */
@@ -303,7 +268,6 @@ class Number extends Node implements \ArrayAccess
     {
         return $this->output();
     }
-
     /**
      * Normalize units
      *
@@ -311,20 +275,36 @@ class Number extends Node implements \ArrayAccess
      * @param array         $units
      * @param string        $baseUnit
      */
-    private function normalizeUnits(&$dimension, &$units, $baseUnit = 'in')
+    private function normalizeUnits(&$dimension, &$units, $baseUnit = null)
     {
         $dimension = $this->dimension;
-        $units     = [];
-
+        $units = [];
         foreach ($this->units as $unit => $exp) {
-            if (isset(static::$unitTable[$baseUnit][$unit])) {
-                $factor = pow(static::$unitTable[$baseUnit][$unit], $exp);
-
+            if (!$baseUnit) {
+                $baseUnit = $this->findBaseUnit($unit);
+            }
+            if ($baseUnit && isset(static::$unitTable[$baseUnit][$unit])) {
+                $factor = \pow(static::$unitTable[$baseUnit][$unit], $exp);
                 $unit = $baseUnit;
                 $dimension /= $factor;
             }
-
             $units[$unit] = $exp + (isset($units[$unit]) ? $units[$unit] : 0);
         }
+    }
+    /**
+     * Find the base unit family for a given unit
+     *
+     * @param string $unit
+     *
+     * @return string|null
+     */
+    private function findBaseUnit($unit)
+    {
+        foreach (static::$unitTable as $baseUnit => $unitVariants) {
+            if (isset($unitVariants[$unit])) {
+                return $baseUnit;
+            }
+        }
+        return null;
     }
 }

@@ -1,24 +1,23 @@
 <?php
+
 /**
  * SCSSPHP
  *
- * @copyright 2012-2018 Leaf Corcoran
+ * @copyright 2012-2020 Leaf Corcoran
  *
  * @license http://opensource.org/licenses/MIT MIT
  *
- * @link http://leafo.github.io/scssphp
+ * @link http://scssphp.github.io/scssphp
  */
+namespace OM4\Vendor\ScssPhp\ScssPhp\Formatter;
 
-namespace Leafo\ScssPhp\Formatter;
-
-use Leafo\ScssPhp\Formatter;
-
+use OM4\Vendor\ScssPhp\ScssPhp\Formatter;
 /**
  * Compact formatter
  *
  * @author Leaf Corcoran <leafot@gmail.com>
  */
-class Compact extends Formatter
+class Compact extends \OM4\Vendor\ScssPhp\ScssPhp\Formatter
 {
     /**
      * {@inheritdoc}
@@ -32,9 +31,8 @@ class Compact extends Formatter
         $this->close = "}\n\n";
         $this->tagSeparator = ',';
         $this->assignSeparator = ':';
-        $this->keepSemicolons = true;
+        $this->keepSemicolons = \true;
     }
-
     /**
      * {@inheritdoc}
      */

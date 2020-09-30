@@ -1,25 +1,24 @@
 <?php
+
 /**
  * SCSSPHP
  *
- * @copyright 2012-2018 Leaf Corcoran
+ * @copyright 2012-2020 Leaf Corcoran
  *
  * @license http://opensource.org/licenses/MIT MIT
  *
- * @link http://leafo.github.io/scssphp
+ * @link http://scssphp.github.io/scssphp
  */
+namespace OM4\Vendor\ScssPhp\ScssPhp\Formatter;
 
-namespace Leafo\ScssPhp\Formatter;
-
-use Leafo\ScssPhp\Formatter;
-use Leafo\ScssPhp\Formatter\OutputBlock;
-
+use OM4\Vendor\ScssPhp\ScssPhp\Formatter;
+use OM4\Vendor\ScssPhp\ScssPhp\Formatter\OutputBlock;
 /**
  * Crunched formatter
  *
  * @author Anthon Pang <anthon.pang@gmail.com>
  */
-class Crunched extends Formatter
+class Crunched extends \OM4\Vendor\ScssPhp\ScssPhp\Formatter
 {
     /**
      * {@inheritdoc}
@@ -33,28 +32,33 @@ class Crunched extends Formatter
         $this->close = '}';
         $this->tagSeparator = ',';
         $this->assignSeparator = ':';
-        $this->keepSemicolons = false;
+        $this->keepSemicolons = \false;
     }
-
     /**
      * {@inheritdoc}
      */
-    public function blockLines(OutputBlock $block)
+    public function blockLines(\OM4\Vendor\ScssPhp\ScssPhp\Formatter\OutputBlock $block)
     {
         $inner = $this->indentStr();
-
         $glue = $this->break . $inner;
-
         foreach ($block->lines as $index => $line) {
-            if (substr($line, 0, 2) === '/*') {
+            if (\substr($line, 0, 2) === '/*') {
                 unset($block->lines[$index]);
             }
         }
-
-        $this->write($inner . implode($glue, $block->lines));
-
-        if (! empty($block->children)) {
+        $this->write($inner . \implode($glue, $block->lines));
+        if (!empty($block->children)) {
             $this->write($this->break);
         }
+    }
+    /**
+     * Output block selectors
+     *
+     * @param \OM4\Vendor\ScssPhp\ScssPhp\Formatter\OutputBlock $block
+     */
+    protected function blockSelectors(\OM4\Vendor\ScssPhp\ScssPhp\Formatter\OutputBlock $block)
+    {
+        $inner = $this->indentStr();
+        $this->write($inner . \implode($this->tagSeparator, \str_replace([' > ', ' + ', ' ~ '], ['>', '+', '~'], $block->selectors)) . $this->open . $this->break);
     }
 }
