@@ -15,7 +15,9 @@ namespace OM4\Vendor\ScssPhp\ScssPhp\Exception;
  * Compiler exception
  *
  * @author Oleksandr Savchenko <traveltino@gmail.com>
+ *
+ * @internal
  */
-class CompilerException extends \Exception implements \OM4\Vendor\ScssPhp\ScssPhp\Exception\SassException
+class CompilerException extends \Exception implements SassException
 {
 }

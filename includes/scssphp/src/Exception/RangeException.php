@@ -15,7 +15,9 @@ namespace OM4\Vendor\ScssPhp\ScssPhp\Exception;
  * Range exception
  *
  * @author Anthon Pang <anthon.pang@gmail.com>
+ *
+ * @internal
  */
-class RangeException extends \Exception implements \OM4\Vendor\ScssPhp\ScssPhp\Exception\SassException
+class RangeException extends \Exception implements SassException
 {
 }

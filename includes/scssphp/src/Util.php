@@ -13,10 +13,13 @@ namespace OM4\Vendor\ScssPhp\ScssPhp;
 
 use OM4\Vendor\ScssPhp\ScssPhp\Base\Range;
 use OM4\Vendor\ScssPhp\ScssPhp\Exception\RangeException;
+use OM4\Vendor\ScssPhp\ScssPhp\Node\Number;
 /**
- * Utilty functions
+ * Utility functions
  *
  * @author Anthon Pang <anthon.pang@gmail.com>
+ *
+ * @internal
  */
 class Util
 {
@@ -24,21 +27,21 @@ class Util
      * Asserts that `value` falls within `range` (inclusive), leaving
      * room for slight floating-point errors.
      *
-     * @param string                    $name  The name of the value. Used in the error message.
-     * @param \OM4\Vendor\ScssPhp\ScssPhp\Base\Range $range Range of values.
-     * @param array                     $value The value to check.
-     * @param string                    $unit  The unit of the value. Used in error reporting.
+     * @param string       $name  The name of the value. Used in the error message.
+     * @param Range        $range Range of values.
+     * @param array|Number $value The value to check.
+     * @param string       $unit  The unit of the value. Used in error reporting.
      *
      * @return mixed `value` adjusted to fall within range, if it was outside by a floating-point margin.
      *
      * @throws \OM4\Vendor\ScssPhp\ScssPhp\Exception\RangeException
      */
-    public static function checkRange($name, \OM4\Vendor\ScssPhp\ScssPhp\Base\Range $range, $value, $unit = '')
+    public static function checkRange($name, Range $range, $value, $unit = '')
     {
         $val = $value[1];
-        $grace = new \OM4\Vendor\ScssPhp\ScssPhp\Base\Range(-1.0E-5, 1.0E-5);
+        $grace = new Range(-1.0E-5, 1.0E-5);
         if (!\is_numeric($val)) {
-            throw new \OM4\Vendor\ScssPhp\ScssPhp\Exception\RangeException("{$name} {$val} is not a number.");
+            throw new RangeException("{$name} {$val} is not a number.");
         }
         if ($range->includes($val)) {
             return $val;
@@ -49,7 +52,7 @@ class Util
         if ($grace->includes($val - $range->last)) {
             return $range->last;
         }
-        throw new \OM4\Vendor\ScssPhp\ScssPhp\Exception\RangeException("{$name} {$val} must be between {$range->first} and {$range->last}{$unit}");
+        throw new RangeException("{$name} {$val} must be between {$range->first} and {$range->last}{$unit}");
     }
     /**
      * Encode URI component
@@ -66,14 +69,14 @@ class Util
     /**
      * mb_chr() wrapper
      *
-     * @param integer $code
+     * @param int $code
      *
      * @return string
      */
     public static function mbChr($code)
     {
-        // Use the native implementation if available.
-        if (\function_exists('mb_chr')) {
+        // Use the native implementation if available, but not on PHP 7.2 as mb_chr(0) is buggy there
+        if (\PHP_VERSION_ID > 70300 && \function_exists('mb_chr')) {
             return \mb_chr($code, 'UTF-8');
         }
         if (0x80 > ($code %= 0x200000)) {
@@ -91,7 +94,7 @@ class Util
      * mb_strlen() wrapper
      *
      * @param string $string
-     * @return false|int
+     * @return int
      */
     public static function mbStrlen($string)
     {
@@ -100,9 +103,9 @@ class Util
             return \mb_strlen($string, 'UTF-8');
         }
         if (\function_exists('iconv_strlen')) {
-            return @\iconv_strlen($string, 'UTF-8');
+            return (int) @\iconv_strlen($string, 'UTF-8');
         }
-        return \strlen($string);
+        throw new \LogicException('Either mbstring (recommended) or iconv is necessary to use Scssphp.');
     }
     /**
      * mb_substr() wrapper
@@ -134,6 +137,24 @@ class Util
             }
             return (string) \iconv_substr($string, $start, $length, 'UTF-8');
         }
-        return \substr($string, $start, $length);
+        throw new \LogicException('Either mbstring (recommended) or iconv is necessary to use Scssphp.');
+    }
+    /**
+     * mb_strpos wrapper
+     * @param string $haystack
+     * @param string $needle
+     * @param int $offset
+     *
+     * @return int|false
+     */
+    public static function mbStrpos($haystack, $needle, $offset = 0)
+    {
+        if (\function_exists('mb_strpos')) {
+            return \mb_strpos($haystack, $needle, $offset, 'UTF-8');
+        }
+        if (\function_exists('iconv_strpos')) {
+            return \iconv_strpos($haystack, $needle, $offset, 'UTF-8');
+        }
+        throw new \LogicException('Either mbstring (recommended) or iconv is necessary to use Scssphp.');
     }
 }

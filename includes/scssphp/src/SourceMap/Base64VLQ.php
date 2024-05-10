@@ -11,7 +11,6 @@
  */
 namespace OM4\Vendor\ScssPhp\ScssPhp\SourceMap;
 
-use OM4\Vendor\ScssPhp\ScssPhp\SourceMap\Base64;
 /**
  * Base 64 VLQ
  *
@@ -34,6 +33,8 @@ use OM4\Vendor\ScssPhp\ScssPhp\SourceMap\Base64;
  *
  * @author John Lenz <johnlenz@google.com>
  * @author Anthon Pang <anthon.pang@gmail.com>
+ *
+ * @internal
  */
 class Base64VLQ
 {
@@ -46,7 +47,7 @@ class Base64VLQ
     /**
      * Returns the VLQ encoded value.
      *
-     * @param integer $value
+     * @param int $value
      *
      * @return string
      */
@@ -61,7 +62,7 @@ class Base64VLQ
             if ($vlq > 0) {
                 $digit |= self::VLQ_CONTINUATION_BIT;
             }
-            $encoded .= \OM4\Vendor\ScssPhp\ScssPhp\SourceMap\Base64::encode($digit);
+            $encoded .= Base64::encode($digit);
         } while ($vlq > 0);
         return $encoded;
     }
@@ -69,9 +70,9 @@ class Base64VLQ
      * Decodes VLQValue.
      *
      * @param string $str
-     * @param integer $index
+     * @param int    $index
      *
-     * @return integer
+     * @return int
      */
     public static function decode($str, &$index)
     {
@@ -79,7 +80,7 @@ class Base64VLQ
         $shift = 0;
         do {
             $c = $str[$index++];
-            $digit = \OM4\Vendor\ScssPhp\ScssPhp\SourceMap\Base64::decode($c);
+            $digit = Base64::decode($c);
             $continuation = ($digit & self::VLQ_CONTINUATION_BIT) != 0;
             $digit &= self::VLQ_BASE_MASK;
             $result = $result + ($digit << $shift);
@@ -93,9 +94,9 @@ class Base64VLQ
      *   1 becomes 2 (10 binary), -1 becomes 3 (11 binary)
      *   2 becomes 4 (100 binary), -2 becomes 5 (101 binary)
      *
-     * @param integer $value
+     * @param int $value
      *
-     * @return integer
+     * @return int
      */
     private static function toVLQSigned($value)
     {
@@ -110,9 +111,9 @@ class Base64VLQ
      *   2 (10 binary) becomes 1, 3 (11 binary) becomes -1
      *   4 (100 binary) becomes 2, 5 (101 binary) becomes -2
      *
-     * @param integer $value
+     * @param int $value
      *
-     * @return integer
+     * @return int
      */
     private static function fromVLQSigned($value)
     {

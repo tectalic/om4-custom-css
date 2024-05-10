@@ -12,17 +12,20 @@
 namespace OM4\Vendor\ScssPhp\ScssPhp\Formatter;
 
 use OM4\Vendor\ScssPhp\ScssPhp\Formatter;
-use OM4\Vendor\ScssPhp\ScssPhp\Formatter\OutputBlock;
 use OM4\Vendor\ScssPhp\ScssPhp\Type;
 /**
  * Nested formatter
  *
  * @author Leaf Corcoran <leafot@gmail.com>
+ *
+ * @deprecated since 1.4.0. Use the Expanded formatter instead.
+ *
+ * @internal
  */
-class Nested extends \OM4\Vendor\ScssPhp\ScssPhp\Formatter
+class Nested extends Formatter
 {
     /**
-     * @var integer
+     * @var int
      */
     private $depth;
     /**
@@ -30,6 +33,7 @@ class Nested extends \OM4\Vendor\ScssPhp\ScssPhp\Formatter
      */
     public function __construct()
     {
+        @\trigger_error('The Nested formatter is deprecated since 1.4.0. Use the Expanded formatter instead.', \E_USER_DEPRECATED);
         $this->indentLevel = 0;
         $this->indentChar = '  ';
         $this->break = "\n";
@@ -50,13 +54,15 @@ class Nested extends \OM4\Vendor\ScssPhp\ScssPhp\Formatter
     /**
      * {@inheritdoc}
      */
-    protected function blockLines(\OM4\Vendor\ScssPhp\ScssPhp\Formatter\OutputBlock $block)
+    protected function blockLines(OutputBlock $block)
     {
         $inner = $this->indentStr();
         $glue = $this->break . $inner;
         foreach ($block->lines as $index => $line) {
             if (\substr($line, 0, 2) === '/*') {
-                $block->lines[$index] = \preg_replace('/\\r\\n?|\\n|\\f/', $this->break, $line);
+                $replacedLine = \preg_replace('/\\r\\n?|\\n|\\f/', $this->break, $line);
+                \assert($replacedLine !== null);
+                $block->lines[$index] = $replacedLine;
             }
         }
         $this->write($inner . \implode($glue, $block->lines));
@@ -64,7 +70,7 @@ class Nested extends \OM4\Vendor\ScssPhp\ScssPhp\Formatter
     /**
      * {@inheritdoc}
      */
-    protected function block(\OM4\Vendor\ScssPhp\ScssPhp\Formatter\OutputBlock $block)
+    protected function block(OutputBlock $block)
     {
         static $depths;
         static $downLevel;
@@ -79,12 +85,12 @@ class Nested extends \OM4\Vendor\ScssPhp\ScssPhp\Formatter
             $previousEmpty = \false;
             $previousHasSelector = \false;
         }
-        $isMediaOrDirective = \in_array($block->type, [\OM4\Vendor\ScssPhp\ScssPhp\Type::T_DIRECTIVE, \OM4\Vendor\ScssPhp\ScssPhp\Type::T_MEDIA]);
-        $isSupport = $block->type === \OM4\Vendor\ScssPhp\ScssPhp\Type::T_DIRECTIVE && $block->selectors && \strpos(\implode('', $block->selectors), '@supports') !== \false;
+        $isMediaOrDirective = \in_array($block->type, [Type::T_DIRECTIVE, Type::T_MEDIA]);
+        $isSupport = $block->type === Type::T_DIRECTIVE && $block->selectors && \strpos(\implode('', $block->selectors), '@supports') !== \false;
         while ($block->depth < \end($depths) || $block->depth == 1 && \end($depths) == 1) {
             \array_pop($depths);
             $this->depth--;
-            if (!$this->depth && ($block->depth <= 1 || !$this->indentLevel && $block->type === \OM4\Vendor\ScssPhp\ScssPhp\Type::T_COMMENT) && ($block->selectors && !$isMediaOrDirective || $previousHasSelector)) {
+            if (!$this->depth && ($block->depth <= 1 || !$this->indentLevel && $block->type === Type::T_COMMENT) && ($block->selectors && !$isMediaOrDirective || $previousHasSelector)) {
                 $downLevel = $this->break;
             }
             if (empty($block->lines) && empty($block->children)) {
@@ -107,7 +113,7 @@ class Nested extends \OM4\Vendor\ScssPhp\ScssPhp\Formatter
                 }
             }
         }
-        $previousEmpty = $block->type === \OM4\Vendor\ScssPhp\ScssPhp\Type::T_COMMENT;
+        $previousEmpty = $block->type === Type::T_COMMENT;
         $previousHasSelector = \false;
         if (!empty($block->selectors)) {
             if ($closeBlock) {
@@ -145,7 +151,7 @@ class Nested extends \OM4\Vendor\ScssPhp\ScssPhp\Formatter
             }
         }
         // reclear to not be spoiled by children if T_DIRECTIVE
-        if ($block->type === \OM4\Vendor\ScssPhp\ScssPhp\Type::T_DIRECTIVE) {
+        if ($block->type === Type::T_DIRECTIVE) {
             $previousHasSelector = \false;
         }
         if (!empty($block->selectors)) {
@@ -172,7 +178,7 @@ class Nested extends \OM4\Vendor\ScssPhp\ScssPhp\Formatter
      *
      * @param \OM4\Vendor\ScssPhp\ScssPhp\Formatter\OutputBlock $block
      *
-     * @return boolean
+     * @return bool
      */
     private function hasFlatChild($block)
     {
