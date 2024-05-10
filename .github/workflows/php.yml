@@ -47,7 +47,7 @@ jobs:
         run: composer release:zip ${{ github.sha }}
 
       - name: Upload zip file
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: om4-custom-css.zip
           path: om4-custom-css.zip
