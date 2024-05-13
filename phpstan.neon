@@ -1,10 +1,15 @@
-includes:
-  - vendor/szepeviktor/phpstan-wordpress/extension.neon
 parameters:
-  bootstrapFiles:
-    - includes/scssphp/scss.inc.php
-  excludes_analyse:
-    - includes/scssphp/*
-  fileExtensions:
-    - php
-  level: 5
+	paths:
+		- includes/OM4_Plugin_Appearance.php
+		- om4-custom-css.php
+		- tests
+	scanDirectories:
+			- includes/scssphp
+	fileExtensions:
+		- php
+	level: max
+	ignoreErrors:
+		-
+			message: "#^Parameter \\#1 \\$value of function strval expects bool\\|float\\|int\\|resource\\|string\\|null, mixed given\\.$#"
+			count: 2
+			path: om4-custom-css.php

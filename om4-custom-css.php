@@ -13,27 +13,26 @@ License: GPLv2
 */
 
 /*
+	Copyright 2012-2020 OM4 (email: plugins@om4.io    web: https://om4.io/plugins/)
 
-   Copyright 2012-2020 OM4 (email: plugins@om4.io    web: https://om4.io/plugins/)
+	This program is free software; you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation; either version 2 of the License, or
+	(at your option) any later version.
 
-   This program is free software; you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2 of the License, or
-   (at your option) any later version.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
 
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+	You should have received a copy of the GNU General Public License
+	along with this program; if not, write to the Free Software
+	Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 
 if ( ! class_exists( 'OM4_Plugin_Appearance' ) ) {
-	require_once( 'includes/OM4_Plugin_Appearance.php' );
+	require_once 'includes/OM4_Plugin_Appearance.php';
 }
 
 
@@ -55,12 +54,12 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 
 
 	/**
-	 * Initilise hooks and daily cleanup cron.
+	 * Initialise hooks and daily cleanup cron.
 	 */
 	public function __construct() {
 
 		$this->screen_title = 'Custom CSS';
-		$this->screen_name = 'customcss';
+		$this->screen_name  = 'customcss';
 
 		$this->wp_editor_defaults['textarea_rows'] = 30;
 
@@ -77,7 +76,8 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 		}
 
 		add_action( 'om4_custom_css_cleanup', array( $this, 'cleanup' ) );
-		add_action( 'template_redirect', array( $this, 'template_redirect' ), 11 ); // After WordPress' redirect_canonical.
+		add_action( 'template_redirect', array( $this, 'template_redirect' ), 11 );
+		// After WordPress' redirect_canonical.
 
 		parent::__construct();
 	}
@@ -85,7 +85,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 	/**
 	 * Get the URL to this plugin's folder
 	 */
-	public function plugin_url() {
+	public function plugin_url(): string {
 		return untrailingslashit( plugins_url( '/', __FILE__ ) );
 	}
 
@@ -95,7 +95,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 	 *
 	 * Executed during the init hook when not in the admin/dashboard.
 	 */
-	public function init_frontend() {
+	public function init_frontend(): void {
 
 		// Attempt to ensure that our Custom CSS rules are the last thing output before </head>.
 		$hook = 'wp_head';
@@ -103,10 +103,10 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 			// OM4 Theme.
 			// Maintain backwards-compatibility with OM4 theme.
 			$hook = 'om4_theme_end_head';
-		} else if ( function_exists( 'woo_head' ) ) {
+		} elseif ( function_exists( 'woo_head' ) ) {
 			// WooTheme (eg Canvas).
 			$hook = 'woo_head';
-		} else if ( class_exists( 'FLTheme' ) ) {
+		} elseif ( class_exists( 'FLTheme' ) ) {
 			// Beaver Builder Theme.
 			$hook = 'fl_head';
 		}
@@ -119,8 +119,8 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 	 *
 	 * @return string The CSS
 	 */
-	public function get_custom_css() {
-		return get_option( 'om4_freeform_css', '' );
+	public function get_custom_css(): string {
+		return strval( get_option( 'om4_freeform_css', '' ) );
 	}
 
 	/**
@@ -130,7 +130,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 	 *
 	 * @return boolean False if option was not added and true if option was added
 	 */
-	private function set_custom_css( $css ) {
+	private function set_custom_css( $css ): bool {
 		// Use delete_option() & add_option() instead of update_option() so that we don't autoload the option.
 		delete_option( 'om4_freeform_css' );
 		return add_option( 'om4_freeform_css', $css, '', 'no' );
@@ -146,28 +146,23 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 	 * @return bool True on success, false on failure
 	 * @throws Exception if compilation/saving fails.
 	 */
-	private function save_custom_css( $css ) {
+	private function save_custom_css( $css ): bool {
 		$this->set_custom_css_last_saved_timestamp();
 		$this->set_custom_css( $css );
 		return $this->save_custom_css_to_file();
 	}
 
-	private function get_custom_css_last_saved_timestamp() {
-		return get_option( 'om4_freeform_css_last_saved_timestamp', 1 );
-	}
-
-	private function set_custom_css_last_saved_timestamp( $timestamp = null ) {
-		if ( is_null( $timestamp) )
+	private function set_custom_css_last_saved_timestamp( ?int $timestamp = null ): bool {
+		if ( is_null( $timestamp ) ) {
 			$timestamp = time();
+		}
 		return update_option( 'om4_freeform_css_last_saved_timestamp', $timestamp );
 	}
 
 	/**
 	 * Obtain the full URL to the custom CSS stylesheet.
-	 *
-	 * @return string
 	 */
-	private function get_custom_css_file_url() {
+	private function get_custom_css_file_url(): string {
 		return $this->upload_url( $this->get_custom_css_filename() );
 	}
 
@@ -176,13 +171,13 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 	 *
 	 * Used when cleaning up previous/old CSS files.
 	 *
-	 * @return array The paths (relative to wp-content/uploads/)
+	 * @return string[] The paths (relative to wp-content/uploads/)
 	 */
-	private function get_custom_css_filenames_old() {
+	private function get_custom_css_filenames_old(): array {
 		$old_files = get_option( 'om4_freeform_css_old_files' );
-		if ( false === $old_files ) {
+		if ( ! is_array( $old_files ) ) {
 			$old_files = array();
-			add_option( 'om4_freeform_css_old_files', $old_files, '',  'no' );
+			add_option( 'om4_freeform_css_old_files', $old_files, '', 'no' );
 		}
 		return $old_files;
 	}
@@ -190,14 +185,13 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 	/**
 	 * Obtain the file name to the file where the custom CSS rules are saved to.
 	 * This is relative to the uploads directory.
+	 *
 	 * Examples:
 	 * /custom-122323232.css
 	 * /2012/02/custom-1329690974.css
-	 *
-	 * @return string
 	 */
-	private function get_custom_css_filename() {
-		return get_option( 'om4_freeform_css_filename', '' );
+	private function get_custom_css_filename(): string {
+		return strval( get_option( 'om4_freeform_css_filename', '' ) );
 	}
 
 	/**
@@ -208,10 +202,10 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 	 *
 	 * @param string $filename The filename (excluding path).
 	 */
-	private function set_custom_css_filename( $filename ) {
+	private function set_custom_css_filename( $filename ): bool {
 		// The old filenames are stored for cleanup later.
 		// This stops caching issues where old files are requested but no longer exist.
-		$old_files = $this->get_custom_css_filenames_old();
+		$old_files   = $this->get_custom_css_filenames_old();
 		$old_files[] = $this->get_custom_css_filename();
 		update_option( 'om4_freeform_css_old_files', $old_files );
 		return update_option( 'om4_freeform_css_filename', $filename );
@@ -220,7 +214,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 	/**
 	 * Outputs the custom CSS editor dashboard screen.
 	 */
-	public function dashboard_screen() {
+	public function dashboard_screen(): void {
 		?>
 		<div class='wrap'>
 			<div id="om4-header">
@@ -229,32 +223,32 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 				if ( ! $this->can_access_dashboard_screen() ) {
 					echo '<div class="error"><p>' . esc_html__( 'You do not have permission to access this feature.', 'om4-custom-css' ) . '</p></div>';
 					return;
-			}
+				}
 
-			if ( isset( $_GET['updated'] ) && $_GET['updated'] == 'true' ) {
-			?>
+				if ( isset( $_GET['updated'] ) && $_GET['updated'] == 'true' ) {
+					?>
 			<div id="message" class="updated fade">
 				<p><?php printf( __( 'Custom CSS rules saved. You can <a href="%s">view your site by clicking here</a>.', 'om4-custom-css' ), esc_attr( site_url() ) ); ?></p>
 			</div>
 			<div id="message" class="updated fade">
 				<p><?php printf( __( 'It is recommended that you %1$svalidate your CSS rules%2$s to help you find errors, typos and incorrect uses of CSS.', 'om4-custom-css' ), $this->validate_css_link_start(), '</a>' ); ?></p>
 			</div>
-			<?php
-			} else if ( isset($_GET['updated']) && $_GET['updated'] == 'false' ) {
-				?>
+					<?php
+				} elseif ( isset( $_GET['updated'] ) && $_GET['updated'] == 'false' ) {
+					?>
 				<div id="message" class="error fade">
 					<p><?php esc_html_e( 'There was an error saving your Custom CSS rules. Please try again.', 'om4-custom-css' ); ?></p>
 				</div>
-				<?php
-			}
+					<?php
+				}
 
-			?>
+				?>
 			<form action="<?php echo $this->form_action(); ?>" method="post">
 				<div style="float: right;"><?php echo $this->validate_css_button(); ?></div>
 				<p><?php _e( 'To use <strong>Custom CSS</strong> rules to change the appearance of your site, enter them in this text box. <a href=http://sass-lang.com/documentation/file.SASS_REFERENCE.html#css_extensions" target="_blank">SCSS/SASS syntax</a> (such as variables and nesting) can also be used.', 'om4-custom-css' ); ?></p>
 				<p class="submit">
 					<input type="submit" name="submit" id="submit" class="button-primary" value="<?php esc_html_e( 'Save CSS Rules', 'om4-custom-css' ); ?>" title="<?php esc_html_e( '(Cmd+Enter or Ctrl+Enter)', 'om4-custom-css' ); ?>">
-					<img class="loadingspinner" src="<?= admin_url( "images/wpspin_light-2x.gif" ); ?> " width="16" height="16" valign="middle" alt="<?php esc_html_e( 'Loading...', 'om4-custom-css' ); ?>" style="display: none;" />
+					<img class="loadingspinner" src="<?php echo admin_url( 'images/wpspin_light-2x.gif' ); ?> " width="16" height="16" valign="middle" alt="<?php esc_html_e( 'Loading...', 'om4-custom-css' ); ?>" style="display: none;" />
 				</p>
 				<?php
 				wp_editor( $this->get_custom_css(), 'css', $this->wp_editor_defaults );
@@ -265,7 +259,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 				?>
 				<p class="submit">
 					<input type="submit" name="submit" id="submit" class="button-primary" value="<?php esc_html_e( 'Save CSS Rules', 'om4-custom-css' ); ?>" title="<?php esc_html_e( '(Cmd+Enter or Ctrl+Enter)', 'om4-custom-css' ); ?>">
-					<img class="loadingspinner" src="<?= admin_url( "images/wpspin_light-2x.gif" ); ?> " width="16" height="16" valign="middle" alt="<?php esc_html_e( 'Loading...', 'om4-custom-css' ); ?>" style="display: none;" />
+					<img class="loadingspinner" src="<?php echo admin_url( 'images/wpspin_light-2x.gif' ); ?> " width="16" height="16" valign="middle" alt="<?php esc_html_e( 'Loading...', 'om4-custom-css' ); ?>" style="display: none;" />
 				</p>
 			</form>
 		</div>
@@ -282,8 +276,8 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 
 		// Translatable strings used in JS.
 		$formlabels = array(
-				'saving'  => __( 'Saving...', 'om4-custom-css' ),
-				'default' => __( 'Save CSS Rules', 'om4-custom-css' ),
+			'saving'  => __( 'Saving...', 'om4-custom-css' ),
+			'default' => __( 'Save CSS Rules', 'om4-custom-css' ),
 		);
 		wp_localize_script( 'om4_custom_css_codemirror', 'om4_custom_css', $formlabels );
 	}
@@ -292,7 +286,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 	 * CSS editor JS/CSS
 	 * Initializes CodeMirror editor, sets up AJAX save events and keyboard shortcuts.
 	 */
-	public function admin_print_footer_scripts() {
+	public function admin_print_footer_scripts(): void {
 
 		?>
 		<style type="text/css">
@@ -319,19 +313,19 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 			// Ctrl+Shift+S
 			// Cmd+Shift+S
 			myCodeMirror.setOption("extraKeys", {
-			  'Cmd-Enter': function(cm) {
-				  myCodeMirror.save();
-				  jQuery('#om4-header form').submit();
-			  },'Ctrl-Enter': function(cm) {
-				  myCodeMirror.save();
-				  jQuery('#om4-header form').submit();
-			  },'Shift-Ctrl-S': function(cm) {
-				  myCodeMirror.save();
-				  jQuery('#om4-header form').submit();
-			  },'Shift-Cmd-S': function(cm) {
-				  myCodeMirror.save();
-				  jQuery('#om4-header form').submit();
-			  }
+				'Cmd-Enter': function(cm) {
+					myCodeMirror.save();
+					jQuery('#om4-header form').submit();
+				},'Ctrl-Enter': function(cm) {
+					myCodeMirror.save();
+					jQuery('#om4-header form').submit();
+				},'Shift-Ctrl-S': function(cm) {
+					myCodeMirror.save();
+					jQuery('#om4-header form').submit();
+				},'Shift-Cmd-S': function(cm) {
+					myCodeMirror.save();
+					jQuery('#om4-header form').submit();
+				}
 			});
 
 			jQuery(document).ready(function ($) {
@@ -357,7 +351,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 							}
 						},
 						error: function () {
-							alert('<?php  _e( 'Error saving CSS rules. Please try again.', 'om4-custom-css' ); ?>');
+							alert('<?php _e( 'Error saving CSS rules. Please try again.', 'om4-custom-css' ); ?>');
 						},
 						complete: function () {
 							$('#om4-header form input[type="submit"]').prop('disabled', false).prop( 'value', om4_custom_css.default );
@@ -369,24 +363,24 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 				});
 			});
 		</script>
-	<?php
+		<?php
 	}
 
 	/**
 	 * Determines whether the current request is a WordPress Ajax request.
 	 *
 	 * A wrapper function for WP 4.6 and older compatibility, because wp_doing_ajax() was only added in 4.7
-	 *
-	 * @return bool
 	 */
-	protected function is_doing_ajax() {
+	protected function is_doing_ajax(): bool {
 		return function_exists( 'wp_doing_ajax' ) ? wp_doing_ajax() : defined( 'DOING_AJAX' ) && DOING_AJAX;
 	}
 
 	/**
 	 * Handler that saves the dashboard screen's options/values via AJAX (or POST if JS not available).
+	 *
+	 * @return never
 	 */
-	public function dashboard_screen_save() {
+	public function dashboard_screen_save(): void {
 
 		if ( $this->is_doing_ajax() ) {
 			// AJAX Save.
@@ -405,7 +399,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 				}
 			} else {
 				// User doesn't have permission to access this screen.
-				$data = array();
+				$data            = array();
 				$data['message'] = __( 'Access Denied. Please try again.', 'om4-custom-css' );
 				wp_send_json_error( $data );
 			}
@@ -433,7 +427,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 	/**
 	 * Create a button that when clicked opens a new window that shows the CSS validation results
 	 */
-	private function validate_css_button() {
+	private function validate_css_button(): string {
 		return '<a class="validatecss" target="_blank" href="' . esc_html( $this->validate_css_url() ) . '"><input type="button" name="' . esc_attr__( 'W3C CSS Validation Results', 'om4-custom-css' ) . '" value="' . esc_html__( 'Validate CSS Rules', 'om4-custom-css' ) . '" class="button-secondary" style="margin-left: 3em;" /></a>';
 	}
 
@@ -442,7 +436,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 	 *
 	 * @return string The URL to W3's CSS Validator prepopulated with the CSS file's URI.
 	 */
-	private function validate_css_url() {
+	private function validate_css_url(): string {
 		return 'https://jigsaw.w3.org/css-validator/validator?warning=no&uri=' . urlencode( $this->get_custom_css_file_url() );
 	}
 
@@ -451,14 +445,14 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 	 *
 	 * @return string A HTML link to validate the CSS.
 	 */
-	private function validate_css_link_start() {
-		return '<a target="_blank" class="validatecss" href="' . esc_html( $this->validate_css_url() ) . '" name="' . __('W3C CSS Validation Results', 'om4-custom-css') . '">';
+	private function validate_css_link_start(): string {
+		return '<a target="_blank" class="validatecss" href="' . esc_html( $this->validate_css_url() ) . '" name="' . __( 'W3C CSS Validation Results', 'om4-custom-css' ) . '">';
 	}
 
 	/**
 	 * Output's the link tag to include the stylesheet
 	 */
-	public function output_custom_css_stylesheet() {
+	public function output_custom_css_stylesheet(): void {
 		if ( ( '' != $this->get_custom_css_filename() ) ) {
 			echo "\n" . '<link rel="stylesheet" href="' . $this->get_custom_css_file_url() . '" type="text/css" media="screen" />' . "\n";
 		}
@@ -470,16 +464,17 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 	 * @return boolean False if the stylesheet could not be saved, true otherwise
 	 * @throws Exception if the SCSS compilation fails, or the stylesheet file can't be created.
 	 */
-	public function save_custom_css_to_file() {
+	public function save_custom_css_to_file(): bool {
 
-		require( 'includes/scssphp/scss.inc.php' );
+		require 'includes/scssphp/scss.inc.php';
 
 		$css_compiler = new OM4\Vendor\ScssPhp\ScssPhp\Compiler();
-		$css_compiler->setFormatter( OM4\Vendor\ScssPhp\ScssPhp\Formatter\Compressed::class ) ; // Compressed/minified output.
-		$css = $css_compiler->compile( $this->get_custom_css() );
-		$css = "/* CSS Generated " . date( 'r' ) . ' by User ID ' . get_current_user_id() . " */\n" . $css;
+		$css_compiler->setOutputStyle( OM4\Vendor\ScssPhp\ScssPhp\OutputStyle::COMPRESSED );
+		// Compressed/minified output.
+		$css = $css_compiler->compileString( $this->get_custom_css() )->getCss();
+		$css = '/* CSS Generated ' . date( 'r' ) . ' by User ID ' . get_current_user_id() . " */\n" . $css;
 
-		$random = time();
+		$random   = time();
 		$filename = "custom-$random.css";
 
 		// Save the CSS rules to a unique file.
@@ -490,7 +485,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 
 		if ( ! $result['error'] ) {
 			// Save the filename (and yyyy/mm folder names if applicable) to the newly generated stylesheet.
-			$dir = wp_upload_dir();
+			$dir      = wp_upload_dir();
 			$filename = str_replace( $dir['baseurl'], '', $result['url'] );
 
 			// Create the new CSS file.
@@ -510,10 +505,10 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 	 * Deletes old custom CSS files from the uploads directory.
 	 * Run automatically each day via WP-Cron.
 	 */
-	public function cleanup() {
+	public function cleanup(): void {
 		// Delete the previous CSS stylesheets.
 		$old_files = $this->get_custom_css_filenames_old();
-		$dir = wp_upload_dir();
+		$dir       = wp_upload_dir();
 		foreach ( $old_files as $old_filename ) {
 			$old_filename = $dir['basedir'] . $old_filename;
 			if ( file_exists( $old_filename ) && is_file( $old_filename ) ) {
@@ -530,21 +525,21 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 	 *
 	 * Unfortunately this doesn't seem to work on WP Engine - PHP never seems to get instantiated for /wp-content/uploads/ requests.
 	 */
-	public function template_redirect() {
+	public function template_redirect(): void {
 		if ( is_404() ) {
 			// WordPress is about to emit a 404 error.
 			// Check to see if the request looks like it is for an old custom css file.
 			// The requested URL path.
-			$requested_url = is_ssl() ? 'https://' : 'http://';
+			$requested_url  = is_ssl() ? 'https://' : 'http://';
 			$requested_url .= $_SERVER['HTTP_HOST'];
 			$requested_url .= $_SERVER['REQUEST_URI'];
-			$requested_url = @parse_url( $requested_url );
-			$requested_url = $requested_url['path'];
+			$requested_url  = @parse_url( $requested_url );
+			$requested_url  = $requested_url['path'] ?? '';
 
 			// The URL path to the current/latest custom css file.
 			$current_stylesheet_url = $this->get_custom_css_file_url();
 			$current_stylesheet_url = @parse_url( $current_stylesheet_url );
-			$current_stylesheet_url = $current_stylesheet_url['path'];
+			$current_stylesheet_url = $current_stylesheet_url['path'] ?? '';
 
 			// Cater for an optional /yyyy/mm/ prefix, which may have changed to another year/month (or been removed completely).
 			$pattern                = '/([0-9]{4}\/[0-9]{2}\/)?custom-([0-9]+).css/';
@@ -561,10 +556,10 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 	/**
 	 * Adds in a CSS MIME type to upload the stylesheet.
 	 *
-	 * @param array $mimes Current MIME types.
-	 * @return array The same array with CSS added.
+	 * @param array<string, string> $mimes Current MIME types.
+	 * @return array<string, string> The same array with CSS added.
 	 */
-	public function mime_types( $mimes ) {
+	public function mime_types( $mimes ): array {
 		$mimes['css'] = 'text/css';
 		return $mimes;
 	}
@@ -575,7 +570,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 	 * @param string $path Optional. Path relative to the upload url.
 	 * @return string full URL to the uploaded file.
 	 */
-	private function upload_url( $path = '') {
+	private function upload_url( $path = '' ): string {
 		$dir = wp_upload_dir();
 		$url = $dir['baseurl'] . $path;
 		// Use https:// url if the current page is already being loaded via https.
@@ -584,20 +579,19 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 		}
 		return $url;
 	}
-
-
 }
+
 global $om4_custom_css;
 $om4_custom_css = new OM4_Custom_CSS();
 
 /** BEGIN GLOBAL FUNCTIONS - these are used outside of this plugin file **/
-function om4_save_custom_css_to_file() {
+function om4_save_custom_css_to_file(): bool {
 	global $om4_custom_css;
 	return $om4_custom_css->save_custom_css_to_file();
 }
 
-function om4_get_custom_css() {
+function om4_get_custom_css(): string {
 	global $om4_custom_css;
 	return $om4_custom_css->get_custom_css();
 }
-/** END GLOBAL FUNCTIONS **/
+/** END GLOBAL FUNCTIONS */

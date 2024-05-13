@@ -1,5 +1,9 @@
 <?php
 
+namespace Test;
+
+use PHPUnit\Framework\ComparisonMethodDoesNotDeclareBoolReturnTypeException;
+
 // There are no core functions to read these constants.
 define('ABSPATH', './');
 define('WP_DEBUG', true);
@@ -28,69 +32,70 @@ define('ARRAY_A', 'ARRAY_A');
 define('ARRAY_N', 'ARRAY_N');
 
 // Overwrite WP functions
-function is_admin()
-{
+function is_admin(): bool {
 	return false;
 }
-function add_action()
-{
+
+function add_action(): bool {
 	return true;
 }
-function wp_next_scheduled()
-{
+
+function wp_next_scheduled(): bool {
 	return false;
 }
-function wp_schedule_event()
-{
+
+function wp_schedule_event(): bool {
 	return true;
 }
-function get_option($input)
-{
-	switch ($input) {
+
+function get_option( string $input ): mixed {
+	switch ( $input ) {
 		case 'om4_freeform_css':
 			global $inputFile;
 			global $inputContent;
-			if (isset($inputContent)) {
+			if ( isset( $inputContent ) ) {
 				return $inputContent;
 			}
-			return file_get_contents($inputFile);
+			return file_get_contents( $inputFile );
 		case 'om4_freeform_css_old_files':
-			return [];
+			return array();
 		default:
 			return false;
 	}
 }
-function wp_upload_bits($name, $deprecated,  $bits, $time = null )
-{
+
+/** @return array{error:bool, url:string} */
+function wp_upload_bits( string $name, ?string $deprecated, string $bits, string $time = null ): array {
 	global $outputFile;
 	global $outputContent;
 	$outputContent = $bits;
-	return [
+	return array(
 		'error' => false,
-		'url' => $outputFile,
-	];
+		'url'   => $outputFile,
+	);
 }
-function wp_upload_dir()
-{
+
+/** @return array{baseurl:string} */
+function wp_upload_dir(): array {
 	global $outputFile;
-	return ['baseurl' => $outputFile];
+	return array( 'baseurl' => $outputFile );
 }
-function get_current_user_id()
-{
+
+function get_current_user_id(): int {
 	return 123;
 }
-function add_filter()
-{
+
+function add_filter(): bool {
 	return true;
 }
-function remove_filter()
-{
+
+function remove_filter(): bool {
 	return true;
 }
-function update_option()
-{
+
+function update_option(): bool {
 	return true;
 }
-function do_action()
-{
+
+function do_action(): void {
 }

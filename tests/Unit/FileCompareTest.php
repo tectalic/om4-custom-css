@@ -4,27 +4,31 @@ namespace Test;
 
 require_once(__DIR__ . '/../../om4-custom-css.php');
 
-use PHPUnit\Framework\TestCase;
 use OM4_Custom_CSS;
+use PHPUnit\Framework\TestCase;
 
 class FileCompareTest extends TestCase
 {
-	public function inputOutputProvider()
-	{
-		$buffer = [];
-		$path = dirname(__DIR__) . '/inputs/example/';
-		foreach (scandir($path) as $key => $value) {
-			if (!in_array($value, [".", ".."])) {
-				if (is_file($path . DIRECTORY_SEPARATOR . $value)) {
-					$buffer[] = ['example/' . $value];
+	/** @return array<string[]> */
+	public function inputOutputProvider(): array {
+		$buffer = array();
+		$path   = dirname( __DIR__ ) . '/inputs/example/';
+		$files  = scandir( $path );
+		assert( is_array( $files ) );
+		foreach ( $files as $value ) {
+			if ( ! in_array( $value, array( '.', '..' ) ) ) {
+				if ( is_file( $path . DIRECTORY_SEPARATOR . $value ) ) {
+					$buffer[] = array( 'example/' . $value );
 				}
 			}
 		}
-		$path = dirname(__DIR__) . '/inputs/feature/';
-		foreach (scandir($path) as $key => $value) {
-			if (!in_array($value, [".", ".."])) {
-				if (is_file($path . DIRECTORY_SEPARATOR . $value)) {
-					$buffer[] = ['feature/' . $value];
+		$path  = dirname( __DIR__ ) . '/inputs/feature/';
+		$files = scandir( $path );
+		assert( is_array( $files ) );
+		foreach ( $files as $value ) {
+			if ( ! in_array( $value, array( '.', '..' ) ) ) {
+				if ( is_file( $path . DIRECTORY_SEPARATOR . $value ) ) {
+					$buffer[] = array( 'feature/' . $value );
 				}
 			}
 		}
@@ -32,8 +36,7 @@ class FileCompareTest extends TestCase
 	}
 
 	/** @dataProvider inputOutputProvider */
-	public function testCompareInputOutput($name)
-	{
+	public function testCompareInputOutput( string $name ): void {
 		global $inputFile;
 		global $outputFile;
 		global $outputContent;
@@ -56,8 +59,8 @@ class FileCompareTest extends TestCase
 		$this->assertEquals($expected, $output);
 	}
 
-	public function scssProvider()
-    {
+	/** @return array<string[]> */
+	public function scssProvider(): array {
         return [
             [<<<'END_OF_SCSS'
 .test {
@@ -150,8 +153,7 @@ END_OF_SCSS
     }
 
 	/** @dataProvider scssProvider */
-	public function testCompileException($code, $message)
-	{
+	public function testCompileException( string $code, string $message ): void {
 		$this->expectExceptionMessage($message);
 
 		global $inputContent;
@@ -165,8 +167,8 @@ END_OF_SCSS
 		$customiser->save_custom_css_to_file();
 	}
 
-	public function utfProvider()
-    {
+	/** @return array<string[]> */
+	public function utfProvider(): array {
         return [
             ['span { content: "😎";}', '"span{content:\"\ud83d\ude0e\"}"'],
             ['span { content: "\1F600";}', '"span{content:\"\ud83d\ude00\"}"'],
@@ -178,8 +180,7 @@ END_OF_SCSS
     }
 
 	/** @dataProvider utfProvider */
-	public function testCompileUtf($code, $result)
-	{
+	public function testCompileUtf( string $code, string $result ): void {
 		global $inputContent;
 		global $outputContent;
 
