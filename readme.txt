@@ -19,7 +19,7 @@ Also features a one-click CSS validation button.
 
 The Custom CSS rules are usually output the last thing output before </head>, making it easy to override default CSS rules from themes and plugins.
 
-Note: requires PHP v5.4 or newer.
+Note: requires PHP v7.4 or newer.
 
 == Installation ==
 
