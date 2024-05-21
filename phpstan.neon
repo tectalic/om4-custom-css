@@ -3,8 +3,10 @@ parameters:
 		- includes/OM4_Plugin_Appearance.php
 		- om4-custom-css.php
 		- tests
+	excludePaths:
+		- tests/bootstrap.php
 	scanDirectories:
-			- includes/scssphp
+		- includes/scssphp
 	fileExtensions:
 		- php
 	level: max

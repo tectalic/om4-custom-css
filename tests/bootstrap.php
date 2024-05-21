@@ -1,9 +1,5 @@
 <?php
 
-namespace Test;
-
-use PHPUnit\Framework\ComparisonMethodDoesNotDeclareBoolReturnTypeException;
-
 // There are no core functions to read these constants.
 define( 'ABSPATH', './' );
 define( 'WP_DEBUG', true );

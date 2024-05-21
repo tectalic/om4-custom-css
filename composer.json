@@ -10,11 +10,12 @@
         "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
         "phpcompatibility/phpcompatibility-wp": "^2.1",
         "phpstan/extension-installer": "^1.3",
+        "phpstan/phpstan": "^1.11",
         "phpstan/phpstan-deprecation-rules": "^1.1",
-        "phpstan/phpstan": "^1.10",
         "phpunit/phpunit": "^11.0",
         "scssphp/scssphp": "=1.12.1",
         "squizlabs/php_codesniffer": "^3.9",
+        "symfony/var-dumper": "^7.0",
         "szepeviktor/phpstan-wordpress": "^1.3",
         "wp-coding-standards/wpcs": "^3.1"
     },
@@ -22,8 +23,13 @@
         "humbug/php-scoper": "for generating prefixed vendor packages"
     },
     "scripts": {
-        "test:compat": "vendor/bin/phpcs -p -s --extensions=php --ignore=vendor/*, --standard=PHPCompatibilityWP --runtime-set testVersion 7.2- .",
-        "test:stan": "vendor/bin/phpstan analyse includes om4-custom-css.php",
+        "test": [
+            "@test:compat",
+            "@test:stan",
+            "@test:unit"
+        ],
+        "test:compat": "vendor/bin/phpcs",
+        "test:stan": "vendor/bin/phpstan",
         "test:unit": "vendor/bin/phpunit",
         "release:zip": "git archive --format zip --output om4-custom-css.zip --prefix=om4-custom-css/",
         "scope": "php-scoper add-prefix --config=scoper.php --output-dir=./includes/scssphp --force --quiet"
