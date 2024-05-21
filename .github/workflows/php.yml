@@ -44,5 +44,5 @@ jobs:
         if: matrix.php-versions == '8.3'
         uses: actions/upload-artifact@v4
         with:
-          name: om4-custom-css.zip
+          name: om4-custom-css
           path: release/*
