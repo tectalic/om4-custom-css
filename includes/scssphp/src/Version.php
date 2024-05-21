@@ -18,5 +18,5 @@ namespace OM4\Vendor\ScssPhp\ScssPhp;
  */
 class Version
 {
-    const VERSION = '1.2.1';
+    const VERSION = '1.12.1';
 }

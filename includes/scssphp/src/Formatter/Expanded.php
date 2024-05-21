@@ -12,13 +12,14 @@
 namespace OM4\Vendor\ScssPhp\ScssPhp\Formatter;
 
 use OM4\Vendor\ScssPhp\ScssPhp\Formatter;
-use OM4\Vendor\ScssPhp\ScssPhp\Formatter\OutputBlock;
 /**
  * Expanded formatter
  *
  * @author Leaf Corcoran <leafot@gmail.com>
+ *
+ * @internal
  */
-class Expanded extends \OM4\Vendor\ScssPhp\ScssPhp\Formatter
+class Expanded extends Formatter
 {
     /**
      * {@inheritdoc}
@@ -44,13 +45,15 @@ class Expanded extends \OM4\Vendor\ScssPhp\ScssPhp\Formatter
     /**
      * {@inheritdoc}
      */
-    protected function blockLines(\OM4\Vendor\ScssPhp\ScssPhp\Formatter\OutputBlock $block)
+    protected function blockLines(OutputBlock $block)
     {
         $inner = $this->indentStr();
         $glue = $this->break . $inner;
         foreach ($block->lines as $index => $line) {
             if (\substr($line, 0, 2) === '/*') {
-                $block->lines[$index] = \preg_replace('/\\r\\n?|\\n|\\f/', $this->break, $line);
+                $replacedLine = \preg_replace('/\\r\\n?|\\n|\\f/', $this->break, $line);
+                \assert($replacedLine !== null);
+                $block->lines[$index] = $replacedLine;
             }
         }
         $this->write($inner . \implode($glue, $block->lines));

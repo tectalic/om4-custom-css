@@ -1,7 +1,7 @@
 === OM4 Custom CSS ===
 Tags: custom css, css, css editor
-Requires at least: 4.6
-Tested up to: 5.5
+Requires at least: 5.3
+Tested up to: 6.5
 Stable tag: 1.7
 Contributors: jamescollins
 License: GPLv2 or later
@@ -19,7 +19,7 @@ Also features a one-click CSS validation button.
 
 The Custom CSS rules are usually output the last thing output before </head>, making it easy to override default CSS rules from themes and plugins.
 
-Note: requires PHP v5.4 or newer.
+Note: requires PHP v7.4 or newer.
 
 == Installation ==
 

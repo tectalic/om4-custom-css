@@ -12,19 +12,23 @@
 namespace OM4\Vendor\ScssPhp\ScssPhp\Formatter;
 
 use OM4\Vendor\ScssPhp\ScssPhp\Formatter;
-use OM4\Vendor\ScssPhp\ScssPhp\Formatter\OutputBlock;
 /**
  * Crunched formatter
  *
  * @author Anthon Pang <anthon.pang@gmail.com>
+ *
+ * @deprecated since 1.4.0. Use the Compressed formatter instead.
+ *
+ * @internal
  */
-class Crunched extends \OM4\Vendor\ScssPhp\ScssPhp\Formatter
+class Crunched extends Formatter
 {
     /**
      * {@inheritdoc}
      */
     public function __construct()
     {
+        @\trigger_error('The Crunched formatter is deprecated since 1.4.0. Use the Compressed formatter instead.', \E_USER_DEPRECATED);
         $this->indentLevel = 0;
         $this->indentChar = '  ';
         $this->break = '';
@@ -37,7 +41,7 @@ class Crunched extends \OM4\Vendor\ScssPhp\ScssPhp\Formatter
     /**
      * {@inheritdoc}
      */
-    public function blockLines(\OM4\Vendor\ScssPhp\ScssPhp\Formatter\OutputBlock $block)
+    public function blockLines(OutputBlock $block)
     {
         $inner = $this->indentStr();
         $glue = $this->break . $inner;
@@ -56,8 +60,9 @@ class Crunched extends \OM4\Vendor\ScssPhp\ScssPhp\Formatter
      *
      * @param \OM4\Vendor\ScssPhp\ScssPhp\Formatter\OutputBlock $block
      */
-    protected function blockSelectors(\OM4\Vendor\ScssPhp\ScssPhp\Formatter\OutputBlock $block)
+    protected function blockSelectors(OutputBlock $block)
     {
+        \assert(!empty($block->selectors));
         $inner = $this->indentStr();
         $this->write($inner . \implode($this->tagSeparator, \str_replace([' > ', ' + ', ' ~ '], ['>', '+', '~'], $block->selectors)) . $this->open . $this->break);
     }

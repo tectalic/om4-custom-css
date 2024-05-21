@@ -3,6 +3,7 @@
 .github export-ignore
 .gitignore export-ignore
 composer.json export-ignore
+phpcs.xml export-ignore
 phpstan.neon export-ignore
 phpunit.xml export-ignore
 scoper.php export-ignore

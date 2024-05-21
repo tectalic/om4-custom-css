@@ -12,19 +12,23 @@
 namespace OM4\Vendor\ScssPhp\ScssPhp\Formatter;
 
 use OM4\Vendor\ScssPhp\ScssPhp\Formatter;
-use OM4\Vendor\ScssPhp\ScssPhp\Formatter\OutputBlock;
 /**
  * Debug formatter
  *
  * @author Anthon Pang <anthon.pang@gmail.com>
+ *
+ * @deprecated since 1.4.0.
+ *
+ * @internal
  */
-class Debug extends \OM4\Vendor\ScssPhp\ScssPhp\Formatter
+class Debug extends Formatter
 {
     /**
      * {@inheritdoc}
      */
     public function __construct()
     {
+        @\trigger_error('The Debug formatter is deprecated since 1.4.0.', \E_USER_DEPRECATED);
         $this->indentLevel = 0;
         $this->indentChar = '';
         $this->break = "\n";
@@ -44,7 +48,7 @@ class Debug extends \OM4\Vendor\ScssPhp\ScssPhp\Formatter
     /**
      * {@inheritdoc}
      */
-    protected function blockLines(\OM4\Vendor\ScssPhp\ScssPhp\Formatter\OutputBlock $block)
+    protected function blockLines(OutputBlock $block)
     {
         $indent = $this->indentStr();
         if (empty($block->lines)) {
@@ -58,7 +62,7 @@ class Debug extends \OM4\Vendor\ScssPhp\ScssPhp\Formatter
     /**
      * {@inheritdoc}
      */
-    protected function blockSelectors(\OM4\Vendor\ScssPhp\ScssPhp\Formatter\OutputBlock $block)
+    protected function blockSelectors(OutputBlock $block)
     {
         $indent = $this->indentStr();
         if (empty($block->selectors)) {
@@ -72,7 +76,7 @@ class Debug extends \OM4\Vendor\ScssPhp\ScssPhp\Formatter
     /**
      * {@inheritdoc}
      */
-    protected function blockChildren(\OM4\Vendor\ScssPhp\ScssPhp\Formatter\OutputBlock $block)
+    protected function blockChildren(OutputBlock $block)
     {
         $indent = $this->indentStr();
         if (empty($block->children)) {
@@ -88,7 +92,7 @@ class Debug extends \OM4\Vendor\ScssPhp\ScssPhp\Formatter
     /**
      * {@inheritdoc}
      */
-    protected function block(\OM4\Vendor\ScssPhp\ScssPhp\Formatter\OutputBlock $block)
+    protected function block(OutputBlock $block)
     {
         $indent = $this->indentStr();
         $this->write("{$indent}block->type: {$block->type}\n" . "{$indent}block->depth: {$block->depth}\n");
