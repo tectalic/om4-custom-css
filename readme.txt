@@ -1,7 +1,7 @@
 === OM4 Custom CSS ===
 Tags: custom css, css, css editor
-Requires at least: 4.6
-Tested up to: 5.5
+Requires at least: 5.3
+Tested up to: 6.5
 Stable tag: 1.7
 Contributors: jamescollins
 License: GPLv2 or later
