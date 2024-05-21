@@ -377,22 +377,13 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 	}
 
 	/**
-	 * Determines whether the current request is a WordPress Ajax request.
-	 *
-	 * A wrapper function for WP 4.6 and older compatibility, because wp_doing_ajax() was only added in 4.7
-	 */
-	protected function is_doing_ajax(): bool {
-		return function_exists( 'wp_doing_ajax' ) ? wp_doing_ajax() : defined( 'DOING_AJAX' ) && DOING_AJAX;
-	}
-
-	/**
 	 * Handler that saves the dashboard screen's options/values via AJAX (or POST if JS not available).
 	 *
 	 * @return never
 	 */
 	public function dashboard_screen_save(): void {
 
-		if ( $this->is_doing_ajax() ) {
+		if ( wp_doing_ajax() ) {
 			// AJAX Save.
 			$data = array();
 			if ( check_ajax_referer( 'update_custom_css' ) && $this->can_access_dashboard_screen() ) {
