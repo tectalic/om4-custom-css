@@ -46,7 +46,8 @@ function wp_schedule_event(): bool {
 	return true;
 }
 
-function get_option( string $input ): mixed {
+/** @return mixed */
+function get_option( string $input ) {
 	switch ( $input ) {
 		case 'om4_freeform_css':
 			global $input_file;

@@ -26,7 +26,7 @@ class FileCompareTest extends TestCase {
 		return $buffer;
 	}
 
-	#[DataProvider( 'inputOutputProvider' )]
+	/** @dataProvider inputOutputProvider */
 	public function testCompareInputOutput( string $name ): void {
 		global $input_file;
 		global $output_file;
@@ -153,7 +153,7 @@ END_OF_SCSS
 		];
 	}
 
-	#[DataProvider( 'scssProvider' )]
+	/** @dataProvider scssProvider */
 	public function testCompileException( string $code, string $message ): void {
 		$this->expectExceptionMessage( $message );
 
@@ -180,7 +180,7 @@ END_OF_SCSS
 		];
 	}
 
-	#[DataProvider( 'utfProvider' )]
+	/** @dataProvider utfProvider */
 	public function testCompileUtf( string $code, string $result ): void {
 		global $input_content;
 		global $output_content;
