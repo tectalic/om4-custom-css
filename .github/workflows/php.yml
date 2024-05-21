@@ -38,11 +38,11 @@ jobs:
         if: matrix.php-versions == '8.3'
         run: |
           composer release:zip ${{ github.sha }}
-          unzip om4-custom-css.zip
+          unzip om4-custom-css.zip -d release
 
       - name: Upload zip file
         if: matrix.php-versions == '8.3'
         uses: actions/upload-artifact@v4
         with:
           name: om4-custom-css.zip
-          path: om4-custom-css/
+          path: release/*
