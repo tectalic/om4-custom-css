@@ -255,7 +255,7 @@ class OM4_Custom_CSS extends OM4_Plugin_Appearance {
 				?>
 			<form action="<?php echo $this->form_action(); ?>" method="post">
 				<div style="float: right;"><?php echo $this->validate_css_button(); ?></div>
-				<p><?php esc_html_e( 'To use <strong>Custom CSS</strong> rules to change the appearance of your site, enter them in this text box. <a href=http://sass-lang.com/documentation/file.SASS_REFERENCE.html#css_extensions" target="_blank">SCSS/SASS syntax</a> (such as variables and nesting) can also be used.', 'om4-custom-css' ); ?></p>
+				<p><?php echo wp_kses_post( 'To use <strong>Custom CSS</strong> rules to change the appearance of your site, enter them in this text box. <a href=http://sass-lang.com/documentation/file.SASS_REFERENCE.html#css_extensions" target="_blank">SCSS/SASS syntax</a> (such as variables and nesting) can also be used.', 'om4-custom-css' ); ?></p>
 				<p class="submit">
 					<input type="submit" name="submit" id="submit" class="button-primary" value="<?php esc_html_e( 'Save CSS Rules', 'om4-custom-css' ); ?>" title="<?php esc_html_e( '(Cmd+Enter or Ctrl+Enter)', 'om4-custom-css' ); ?>">
 					<img class="loadingspinner" src="<?php echo admin_url( 'images/wpspin_light-2x.gif' ); ?> " width="16" height="16" valign="middle" alt="<?php esc_html_e( 'Loading...', 'om4-custom-css' ); ?>" style="display: none;" />
