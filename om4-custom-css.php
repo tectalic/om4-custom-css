@@ -13,7 +13,7 @@ License: GPLv2
 */
 
 /*
-	Copyright 2012-2020 OM4 (email: plugins@om4.io    web: https://om4.io/plugins/)
+	Copyright 2012-2024 OM4 (email: plugins@om4.io    web: https://om4.io/plugins/)
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
