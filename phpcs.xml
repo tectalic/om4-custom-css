@@ -1,20 +1,18 @@
 <?xml version="1.0"?>
 
-<ruleset name="OM4 WordPress" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="./vendor/squizlabs/php_codesniffer/phpcs.xsd">
+<ruleset name="OM4 WordPress" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="./vendor/squizlabs/php_codesniffer/phpcs.xsd">
     <description>OM4 Coding Standards for WordPress projects</description>
 
     <!-- Define files to check -->
     <file>.</file>
-
-    <!--  command-line config  -->
-    <arg name="extensions" value="php"/>
-    <arg value="ps"/>
 
     <!-- Exclude from test -->
     <exclude-pattern>./vendor</exclude-pattern>
     <exclude-pattern>./includes/scssphp</exclude-pattern>
 
     <!-- command-line config -->
+    <arg value="ps" />
     <arg name="extensions" value="php" />
 
     <!-- Include all rules from WordPress standard -->
@@ -31,14 +29,15 @@
     <!-- Set supported WP version same as the plugin itself -->
     <config name="minimum_supported_wp_version" value="6.2" />
 
-        <!-- Set text domain to enable checking -->
-        <rule ref="WordPress.WP.I18n">
-            <properties>
-                <property name="text_domain" type="array">
-                    <element value="om4-custom-css" />
-                </property>
-            </properties>
-        </rule>
+    <!-- Set text domain to enable checking -->
+    <rule ref="WordPress.WP.I18n">
+        <properties>
+            <property name="text_domain" type="array">
+                <element value="om4-custom-css" />
+            </property>
+        </properties>
+    </rule>
+
     <!-- Include all rules from phpcompatibility/phpcompatibility-wp -->
     <rule ref="PHPCompatibilityWP" />
 
